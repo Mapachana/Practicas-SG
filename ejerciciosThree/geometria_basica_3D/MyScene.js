@@ -7,7 +7,7 @@ import { TrackballControls } from '../libs/TrackballControls.js'
 
 // Clases de mi proyecto
 
-import { Cubo } from './Figuras.js'
+import { Cubo, Cono} from './Figuras.js'
 
  
 /// La clase fachada del modelo
@@ -36,8 +36,6 @@ class MyScene extends THREE.Scene {
     // Tendremos una cámara con un control de movimiento con el ratón
     this.createCamera ();
     
-    // Un suelo 
-    this.createGround ();
     
     // Y unos ejes. Imprescindibles para orientarnos sobre dónde están las cosas
     this.axis = new THREE.AxesHelper (5);
@@ -49,6 +47,10 @@ class MyScene extends THREE.Scene {
     // la gui y el texto bajo el que se agruparán los controles de la interfaz que añada el modelo.
     this.model = new Cubo(this.gui, "Controles del cubo");
     this.add (this.model);
+
+    this.modelCono = new Cono(this.gui, "Controles del cono");
+    this.modelCono.position.set(5.0, 0.0, 0.0);
+    this.add(this.modelCono);
   }
   
   createCamera () {
@@ -75,26 +77,6 @@ class MyScene extends THREE.Scene {
     this.cameraControl.target = look;
   }
   
-  createGround () {
-    // El suelo es un Mesh, necesita una geometría y un material.
-    
-    // La geometría es una caja con muy poca altura
-    var geometryGround = new THREE.BoxGeometry (50,0.2,50);
-    
-    // El material se hará con una textura de madera
-    var texture = new THREE.TextureLoader().load('../imgs/wood.jpg');
-    var materialGround = new THREE.MeshPhongMaterial ({map: texture});
-    
-    // Ya se puede construir el Mesh
-    var ground = new THREE.Mesh (geometryGround, materialGround);
-    
-    // Todas las figuras se crean centradas en el origen.
-    // El suelo lo bajamos la mitad de su altura para que el origen del mundo se quede en su lado superior
-    ground.position.y = -0.1;
-    
-    // Que no se nos olvide añadirlo a la escena, que en este caso es  this
-    this.add (ground);
-  }
   
   createGUI () {
     // Se crea la interfaz gráfica de usuario
@@ -196,6 +178,7 @@ class MyScene extends THREE.Scene {
     
     // Se actualiza el resto del modelo
     this.model.update();
+    this.modelCono.update();
     
     // Este método debe ser llamado cada vez que queramos visualizar la escena de nuevo.
     // Literalmente le decimos al navegador: "La próxima vez que haya que refrescar la pantalla, llama al método que te indico".
