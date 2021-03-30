@@ -7,7 +7,7 @@ import { TrackballControls } from '../libs/TrackballControls.js'
 
 // Clases de mi proyecto
 
-import { Cubo, Cono} from './Figuras.js'
+import { Cubo, Cono, Cilindro, Esfera, Toro, Icosaedro } from './Figuras.js'
 
  
 /// La clase fachada del modelo
@@ -51,6 +51,22 @@ class MyScene extends THREE.Scene {
     this.modelCono = new Cono(this.gui, "Controles del cono");
     this.modelCono.position.set(5.0, 0.0, 0.0);
     this.add(this.modelCono);
+
+    this.modelCilindro = new Cilindro(this.gui, "Controles del cilindro");
+    this.modelCilindro.position.set(0.0, 0.0, 5.0);
+    this.add(this.modelCilindro);
+
+    this.modelEsfera = new Esfera(this.gui, "Controles de la esfera");
+    this.modelEsfera.position.set(5.0, 0.0, 5.0);
+    this.add(this.modelEsfera);
+
+    this.modelToro = new Toro(this.gui, "Controles del toro");
+    this.modelToro.position.set(0.0, 5.0, 0.0);
+    this.add(this.modelToro);
+
+    this.modelIcosaedro = new Icosaedro(this.gui, "Controles del icosaedro");
+    this.modelIcosaedro.position.set(5.0, 5.0, 0.0);
+    this.add(this.modelIcosaedro);
   }
   
   createCamera () {
