@@ -65,6 +65,7 @@ class Esfera extends THREE.Mesh{
 
       // Parametros de la animacion de subir y bajar de la esfera
       this.velocidad = 2.0;
+      //this.velocidad2 = 20.0;
       this.direccion = 1;
 
       // Instancio cilindro con material transparente (fancy)
