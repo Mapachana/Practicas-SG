@@ -209,7 +209,6 @@ class MyScene extends THREE.Scene {
     var x = event.which || event.keyCode;
     if (String.fromCharCode(x) == "W"){
       this.model.moverAdelante();
-      console.log("hola");
     }
     
   }

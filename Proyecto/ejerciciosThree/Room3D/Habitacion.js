@@ -8,6 +8,7 @@ import * as THREE from '../libs/three.module.js'
 // Clases de mi proyecto
 
 import { Cubo } from './Figuras.js'
+import { Pared } from './pared.js'
 
 class Habitacion extends THREE.Mesh{
 
@@ -20,7 +21,18 @@ class Habitacion extends THREE.Mesh{
       this.MAXIMO_Z = 5.0;
       this.MINIMO_Z = -5.0;
 
-      this.INCREMENTOS = 1.0;
+      this.INCREMENTOS = 0.05;
+
+      this.colisiona = false;
+
+      this.paredes = [];
+      var pared1 = new Pared();
+      pared1.position.z = -5;
+      this.paredes.push(pared1);
+      var that = this;
+      this.paredes.forEach(element => {
+        that.add(element);
+      });
 
       
       this.model = new Cubo(this.gui, "Controles del bicho");
@@ -35,21 +47,37 @@ class Habitacion extends THREE.Mesh{
    
   }
 
-  /* Funcion para mover adelante un mueble */
+  /* Funcion mover hacia alante comrpobando colisiones */
   moverAdelante(){
-    
-    var min_bb = this.model.bbox.min;
-    var max_bb = this.model.bbox.max;
-    console.log(min_bb);
-    console.log(max_bb);
-
-    var pos_z = this.model.position.z;
-
-    if(pos_z - this.INCREMENTOS > this.MINIMO_Z && pos_z - this.INCREMENTOS < this.MAXIMO_Z){
+    if(!this.colisiona){
       this.model.position.z = this.model.position.z - this.INCREMENTOS;
-      this.model.bbox.update();
-      console.log("act");
+
+      if(this.colisionaParedes()){
+        this.model.position.z = this.model.position.z + this.INCREMENTOS;
+        this.colisiona = true;
+      }
     }
+    
+   // console.log(this.colisionaParedes());
+  }
+
+  /* FUncion para comprobar si colisiona con las paredes */
+  colisionaParedes(){
+    var that = this;
+    var entra = false;
+    this.model.updateMatrixWorld();
+    var aux = this.model.bbox.box.clone().applyMatrix4(this.model.matrixWorld);
+
+    this.paredes.forEach(element => {
+      element.updateMatrixWorld();
+
+      var aux2 = element.bbox.box.clone().applyMatrix4(element.matrixWorld);
+      
+      if (aux.intersectsBox(aux2)){
+        entra = true;
+      }
+    });
+    return entra;
   }
 }
 

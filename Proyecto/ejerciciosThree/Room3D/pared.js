@@ -6,7 +6,7 @@ import * as THREE from '../libs/three.module.js'
 // import * as TWEEN from '../libs/tween.esm.js'
 
 
-class Cubo extends THREE.Mesh{
+class Pared extends THREE.Mesh{
 
   constructor(gui, titlegui){
       super();
@@ -18,14 +18,12 @@ class Cubo extends THREE.Mesh{
 
       // Creo la cabeza del comecocos con csv
 
-      var cubo = new THREE.BoxGeometry(1.0, 1.0, 1.0);
-      cubo.translate(0.0, 0.5, 0.0);
+      var cubo = new THREE.BoxGeometry(10.0, 5, 0.5);
 
       var material = new THREE.MeshPhongMaterial({color: 0xFFFF00});
 
       this.cubo = new THREE.Mesh(cubo, material);
 
-      //this.cubo.geometry.computeBoundingBox();
       var bboxaux = new THREE.Box3();
       bboxaux.setFromObject(this.cubo);
       this.bbox = new THREE.Box3Helper (bboxaux, 0xFF0000);
@@ -47,6 +45,6 @@ class Cubo extends THREE.Mesh{
 }
 
 
-export { Cubo }
+export { Pared }
 
     
