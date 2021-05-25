@@ -7,7 +7,7 @@ import * as THREE from '../libs/three.module.js'
 
 // Clases de mi proyecto
 
-import { Cubo } from './Figuras.js'
+import { Mueble } from './Mueble.js'
 import { Pared } from './pared.js'
 
 class Habitacion extends THREE.Mesh{
@@ -16,27 +16,46 @@ class Habitacion extends THREE.Mesh{
       super();
       this.createGUI(gui, titlegui);
 
-      this.MAXIMO_X = 5.0;
-      this.MINIMO_X = -5.0;
-      this.MAXIMO_Z = 5.0;
-      this.MINIMO_Z = -5.0;
-
       this.INCREMENTOS = 0.05;
 
-      this.colisiona = false;
-
       this.paredes = [];
+      this.muebles = []
+
       var pared1 = new Pared();
       pared1.position.z = -5;
       this.paredes.push(pared1);
+
+      var pared2 = new Pared();
+      pared2.position.z = 5;
+      this.paredes.push(pared2);
+
+      var pared3 = new Pared();
+      pared3.rotation.y = Math.PI/2;
+      pared3.position.x = -5;
+      this.paredes.push(pared3);
+
+      var pared4 = new Pared();
+      pared4.rotation.y = Math.PI/2;
+      pared4.position.x = 5;
+      this.paredes.push(pared4);
+
       var that = this;
       this.paredes.forEach(element => {
         that.add(element);
       });
 
       
-      this.model = new Cubo(this.gui, "Controles del bicho");
+      this.model = new Mueble(this.gui, "Controles del bicho");
       this.add (this.model);
+
+      this.estorbo = new Mueble(this.gui, "Controles del bicho");
+      this.estorbo.position.x = 2.0;
+      this.estorbo.position.z = 2.0;
+      this.muebles.push(this.estorbo);
+
+      this.muebles.forEach(element => {
+        that.add(element);
+      });
   }
   createGUI (gui,titleGui) {
 
@@ -49,16 +68,43 @@ class Habitacion extends THREE.Mesh{
 
   /* Funcion mover hacia alante comrpobando colisiones */
   moverAdelante(){
-    if(!this.colisiona){
       this.model.position.z = this.model.position.z - this.INCREMENTOS;
 
       if(this.colisionaParedes()){
         this.model.position.z = this.model.position.z + this.INCREMENTOS;
-        this.colisiona = true;
       }
-    }
     
-   // console.log(this.colisionaParedes());
+  }
+
+   /* Funcion mover hacia atras comrpobando colisiones */
+   moverAtras(){
+
+      this.model.position.z = this.model.position.z + this.INCREMENTOS;
+
+      if(this.colisionaParedes()){
+        this.model.position.z = this.model.position.z - this.INCREMENTOS;
+      }
+
+  }
+
+   /* Funcion mover hacia izquierda comrpobando colisiones */
+   moverIzquierda(){
+
+      this.model.position.x = this.model.position.x - this.INCREMENTOS;
+
+      if(this.colisionaParedes()){
+        this.model.position.x = this.model.position.x + this.INCREMENTOS;
+      }
+
+  }
+
+  /* Funcion mover hacia derecha comrpobando colisiones */
+  moverDerecha(){
+      this.model.position.x = this.model.position.x + this.INCREMENTOS;
+
+      if(this.colisionaParedes()){
+        this.model.position.x = this.model.position.x - this.INCREMENTOS;
+      }
   }
 
   /* FUncion para comprobar si colisiona con las paredes */
@@ -69,6 +115,36 @@ class Habitacion extends THREE.Mesh{
     var aux = this.model.bbox.box.clone().applyMatrix4(this.model.matrixWorld);
 
     this.paredes.forEach(element => {
+      element.updateMatrixWorld();
+
+      var aux2 = element.bbox.box.clone().applyMatrix4(element.matrixWorld);
+      
+      if (aux.intersectsBox(aux2)){
+        entra = true;
+      }
+    });
+
+    this.muebles.forEach(element => {
+      element.updateMatrixWorld();
+
+      var aux2 = element.bbox.box.clone().applyMatrix4(element.matrixWorld);
+      
+      if (aux.intersectsBox(aux2)){
+        entra = true;
+      }
+    });
+
+    return entra;
+  }
+
+  /* FUncion para comprobar si colisiona con otros objetos */
+  colisionaMuebles(){
+    var that = this;
+    var entra = false;
+    this.model.updateMatrixWorld();
+    var aux = this.model.bbox.box.clone().applyMatrix4(this.model.matrixWorld);
+
+    this.muebles.forEach(element => {
       element.updateMatrixWorld();
 
       var aux2 = element.bbox.box.clone().applyMatrix4(element.matrixWorld);

@@ -210,6 +210,15 @@ class MyScene extends THREE.Scene {
     if (String.fromCharCode(x) == "W"){
       this.model.moverAdelante();
     }
+    else if (String.fromCharCode(x) == "A"){
+      this.model.moverIzquierda();
+    }
+    else if (String.fromCharCode(x) == "S"){
+      this.model.moverAtras();
+    }
+    else if (String.fromCharCode(x) == "D"){
+      this.model.moverDerecha();
+    }
     
   }
 }
