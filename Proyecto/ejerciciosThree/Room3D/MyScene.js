@@ -8,6 +8,7 @@ import { TrackballControls } from '../libs/TrackballControls.js'
 // Clases de mi proyecto
 
 import { Habitacion } from './Habitacion.js'
+import { Mueble } from './Mueble.js'
 
  
 /// La clase fachada del modelo
@@ -50,6 +51,11 @@ class MyScene extends THREE.Scene {
     // la gui y el texto bajo el que se agruparán los controles de la interfaz que añada el modelo.
     this.model = new Habitacion(this.gui, "Controles del bicho");
     this.add (this.model);
+
+
+    // Objeto seleccionado
+    this.selectedObject = null;
+    this.pickableObjects = this.model.muebles;
   }
   
   createCamera () {
@@ -74,6 +80,9 @@ class MyScene extends THREE.Scene {
     this.cameraControl.panSpeed = 0.5;
     // Debe orbitar con respecto al punto de mira de la cámara
     this.cameraControl.target = look;
+
+    // Inicio con el control de camara desactivada
+    this.cameraControl.enabled = false;
   }
 
   createGround () {
@@ -164,6 +173,11 @@ class MyScene extends THREE.Scene {
     // Si hubiera varias cámaras, este método decidiría qué cámara devuelve cada vez que es consultado
     return this.camera;
   }
+
+  // Funcion que devuelve los controles de camara
+  getCameraControls () {
+    return this.cameraControl;
+  }
   
   setCameraAspect (ratio) {
     // Cada vez que el usuario modifica el tamaño de la ventana desde el gestor de ventanas de
@@ -219,7 +233,40 @@ class MyScene extends THREE.Scene {
     else if (String.fromCharCode(x) == "D"){
       this.model.moverDerecha();
     }
+    else{
+      var x = event.which || event.keyCode;
+      switch (x) {
+        case 17 : // Ctrl key
+          this.getCameraControls().enabled = true;
+      }
+    }
     
+  }
+
+  onKeyUp (event) {
+    var x = event.which || event.keyCode;
+    switch (x) {
+      case 17 : // Ctrl key
+        this.getCameraControls().enabled = false;
+    }
+  }
+
+  onMouseDown (event) {
+    console.log("hago picking");
+    var mouse = new THREE.Vector2();
+    mouse.x = (event.clientX/window.innerWidth)*2-1;
+    mouse.y = 1-2*(event.clientY/window.innerHeight);
+
+    var raycaster = new THREE.Raycaster();
+    raycaster.setFromCamera(mouse, this.getCamera());
+
+    var pickedObjects = raycaster.intersectObjects(this.pickableObjects, true);
+
+    if(pickedObjects.length > 0){
+      this.selectedObject = pickedObjects[0].object.parent;
+      console.log(this.selectedObject);
+      console.log(this.selectedObject.ident);
+    }
   }
 }
 
@@ -234,7 +281,9 @@ $(function () {
   window.addEventListener ("resize", () => scene.onWindowResize());
 
   // Añado los listener de la aplicacion
-  window.addEventListener ("keydown", (event) => scene.onKeyDown (event), true);
+  window.addEventListener ("keydown", (event) => scene.onKeyDown (event), true); // Pulsar tecla
+  window.addEventListener ("keyup", (event) => scene.onKeyUp(event), true); // Levantar tecla
+  window.addEventListener ("mousedown", (event) => scene.onMouseDown(event), true); // Pulsar con el raton (picking)
   
   // Que no se nos olvide, la primera visualización.
   scene.update();

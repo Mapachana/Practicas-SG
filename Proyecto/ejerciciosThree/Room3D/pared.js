@@ -27,7 +27,8 @@ class Pared extends THREE.Mesh{
       var bboxaux = new THREE.Box3();
       bboxaux.setFromObject(this.cubo);
       this.bbox = new THREE.Box3Helper (bboxaux, 0xFF0000);
-      this.bbox.visible = true;
+      // this.bbox.visible = false; Hace visible o invisible las colisiones
+      //this.bbox.visible = true;
 
       this.add(this.cubo);
       this.add(this.bbox);

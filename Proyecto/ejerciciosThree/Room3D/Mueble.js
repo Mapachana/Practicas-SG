@@ -8,15 +8,20 @@ import * as THREE from '../libs/three.module.js'
 
 class Mueble extends THREE.Mesh{
 
-  constructor(gui, titlegui){
+  constructor(identificador, gui, titlegui){
       super();
       this.createGUI(gui, titlegui);
-      /* Aqui instanciaria le otro comecocos si me hubiera dado tiepo
-      this.coso = new Bicho(gui, titlegui);
-      this.add(this.coso);*/
-      // Como no me ha dado tiempo a hacer el otro comecocos para animar la boca lo voy a hacer con el otro mas simple
 
-      // Creo la cabeza del comecocos con csv
+      // Identificador univoco del mueble en la habitacion
+      this.ident = new Number(identificador);
+
+      // Mueble que se puede poner encima de otros y si esta encima de alguien de quien
+      this.estarEncima = true;
+      this.encimaDe = -1;
+
+      // Mueble que puede tener otros encima y altura
+      this.ponerEncima = true;
+      this.altura = 1.05;
 
       var cubo = new THREE.BoxGeometry(1.0, 1.0, 1.0);
       cubo.translate(0.0, 0.5, 0.0);
@@ -25,7 +30,6 @@ class Mueble extends THREE.Mesh{
 
       this.cubo = new THREE.Mesh(cubo, material);
 
-      //this.cubo.geometry.computeBoundingBox();
       var bboxaux = new THREE.Box3();
       bboxaux.setFromObject(this.cubo);
       this.bbox = new THREE.Box3Helper (bboxaux, 0xFF0000);
