@@ -24,6 +24,12 @@ class MyScene extends THREE.Scene {
     
     // Lo primero, crear el visualizador, pasándole el lienzo sobre el que realizar los renderizados.
     this.renderer = this.createRenderer(myCanvas);
+
+    // Listado de posibles muebles a añadir
+    this.nombres = [];
+    this.nombres = ['Mesa', 'Mueble'];
+
+    this.modoActual = MyScene.MovingMueble;
     
     // Se crea la interfaz gráfica de usuario
     this.gui = this.createGUI ();
@@ -54,8 +60,17 @@ class MyScene extends THREE.Scene {
 
 
     // Objeto seleccionado
-    this.selectedObject = null;
-    this.pickableObjects = this.model.muebles;
+    this.selectedObject = this.model.muebles[0];
+    // Objetos que se pueden seleccionar
+    this.pickableObjects = [];
+
+    var that = this;
+    this.model.muebles.forEach(element => {
+      that.pickableObjects.push(element.cubo);
+    });
+
+    
+ 
   }
   
   createCamera () {
@@ -96,21 +111,21 @@ class MyScene extends THREE.Scene {
     var materialGround = new THREE.MeshPhongMaterial ({map: texture});
     
     // Ya se puede construir el Mesh
-    var ground = new THREE.Mesh (geometryGround, materialGround);
+    this.ground = new THREE.Mesh (geometryGround, materialGround);
     
     // Todas las figuras se crean centradas en el origen.
     // El suelo lo bajamos la mitad de su altura para que el origen del mundo se quede en su lado superior
-    ground.position.y = -0.1;
+    this.ground.position.y = -0.1;
     
     // Que no se nos olvide añadirlo a la escena, que en este caso es  this
-    this.add (ground);
+    this.add (this.ground);
   }
   
   
   createGUI () {
     // Se crea la interfaz gráfica de usuario
     var gui = new GUI();
-    
+    var that = this;
     // La escena le va a añadir sus propios controles. 
     // Se definen mediante una   new function()
     // En este caso la intensidad de la luz y si se muestran o no los ejes
@@ -118,7 +133,25 @@ class MyScene extends THREE.Scene {
       // En el contexto de una función   this   alude a la función
       this.lightIntensity = 0.5;
       this.axisOnOff = true;
+      this.nuevoMueble = 'Mueble';
+      this.aniadirMueble = function(){
+        that.modoActual = MyScene.AddingMueble;
+      }
+      this.moverMueble = function(){
+        if(that.selectedObject != null)
+          that.modoActual = MyScene.MovingMueble;
+      }
     }
+
+    var folderAddMuebles = gui.addFolder("Aniadir");
+    
+    var tipo_mueble = folderAddMuebles.add(this.guiControls, 'nuevoMueble').options(this.nombres).name("Mueble");
+    var aniadir = folderAddMuebles.add(this.guiControls, 'aniadirMueble').name("Añadir");
+
+    var folderMoveMuebles = gui.addFolder("Mover");
+
+    var mover = folderMoveMuebles.add(this.guiControls, 'moverMueble').name("Mover");
+  
 
     // Se crea una sección para los controles de esta clase
     var folder = gui.addFolder ('Luz y Ejes');
@@ -221,24 +254,24 @@ class MyScene extends THREE.Scene {
 
   onKeyDown (event) {
     var x = event.which || event.keyCode;
-    if (String.fromCharCode(x) == "W"){
-      this.model.moverAdelante();
-    }
-    else if (String.fromCharCode(x) == "A"){
-      this.model.moverIzquierda();
-    }
-    else if (String.fromCharCode(x) == "S"){
-      this.model.moverAtras();
-    }
-    else if (String.fromCharCode(x) == "D"){
-      this.model.moverDerecha();
-    }
-    else{
-      var x = event.which || event.keyCode;
-      switch (x) {
-        case 17 : // Ctrl key
-          this.getCameraControls().enabled = true;
+    if(this.modoActual == MyScene.MovingMueble){
+      if (String.fromCharCode(x) == "W"){
+        this.model.moverAdelante(this.selectedObject);
       }
+      else if (String.fromCharCode(x) == "A"){
+        this.model.moverIzquierda(this.selectedObject);
+      }
+      else if (String.fromCharCode(x) == "S"){
+        this.model.moverAtras(this.selectedObject);
+      }
+      else if (String.fromCharCode(x) == "D"){
+        this.model.moverDerecha(this.selectedObject);
+      }
+    }
+
+    switch (x) {
+      case 17 : // Ctrl key
+        this.getCameraControls().enabled = true;
     }
     
   }
@@ -252,23 +285,42 @@ class MyScene extends THREE.Scene {
   }
 
   onMouseDown (event) {
-    console.log("hago picking");
-    var mouse = new THREE.Vector2();
-    mouse.x = (event.clientX/window.innerWidth)*2-1;
-    mouse.y = 1-2*(event.clientY/window.innerHeight);
+    if(this.modoActual == MyScene.MovingMueble){
+      var mouse = new THREE.Vector2();
+      mouse.x = (event.clientX/window.innerWidth)*2-1;
+      mouse.y = 1-2*(event.clientY/window.innerHeight);
 
-    var raycaster = new THREE.Raycaster();
-    raycaster.setFromCamera(mouse, this.getCamera());
+      var raycaster = new THREE.Raycaster();
+      raycaster.setFromCamera(mouse, this.getCamera());
 
-    var pickedObjects = raycaster.intersectObjects(this.pickableObjects, true);
+      var pickedObjects = raycaster.intersectObjects(this.pickableObjects, true);
 
-    if(pickedObjects.length > 0){
-      this.selectedObject = pickedObjects[0].object.parent;
-      console.log(this.selectedObject);
-      console.log(this.selectedObject.ident);
+      if(pickedObjects.length > 0){
+        this.selectedObject = pickedObjects[0].object.parent;
+      }
+    }
+    else if(this.modoActual == MyScene.AddingMueble){
+      var mouse = new THREE.Vector2 ();
+      mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+      mouse.y = 1 - 2 * (event.clientY / window.innerHeight);
+
+      var raycaster = new THREE.Raycaster();
+      raycaster.setFromCamera(mouse, this.getCamera());
+
+      var pickedObjects = raycaster.intersectObjects([this.ground]);
+      if (pickedObjects.length > 0) {
+        var coords = new THREE.Vector3 (pickedObjects[0].point.x, 0.0, pickedObjects[0].point.z);
+        this.model.aniadirMueble(this.guiControls.nuevoMueble, coords);
+      }
+      
     }
   }
+
 }
+
+// Atributos de clase: Modos de la aplicacion
+MyScene.AddingMueble = 1;
+MyScene.MovingMueble = 2;
 
 
 /// La función   main

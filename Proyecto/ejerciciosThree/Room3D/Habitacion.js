@@ -7,7 +7,7 @@ import * as THREE from '../libs/three.module.js'
 
 // Clases de mi proyecto
 
-import { Mueble } from './Mueble.js'
+import { Mueble, Mesa } from './Mueble.js'
 import { Pared } from './pared.js'
 
 class Habitacion extends THREE.Mesh{
@@ -48,38 +48,27 @@ class Habitacion extends THREE.Mesh{
 
       
       this.model = new Mueble(this.num_id, this.gui, "Controles del bicho");
-      this.add (this.model);
+      //this.add (this.model);
       this.muebles.push(this.model);
 
       this.num_id++;
 
-      this.estorbo = new Mueble(this.num_id, this.gui, "Controles del bicho");
+      this.estorbo = new Mesa(this.num_id, this.gui, "Controles del bicho");
       this.num_id++;
 
       this.estorbo.position.x = 2.0;
       this.estorbo.position.z = 2.0;
       this.muebles.push(this.estorbo);
-      this.nombres = [];
-      this.nombres = ['1', '2'];
  
       this.muebles.forEach(element => {
         that.add(element);
       });
 
       this.createGUI(gui, titlegui);
-      this.nombres.push("3");
+
 
   }
   createGUI (gui,titleGui) {
-    var that = this;
-
-    this.guiControls = new function (){
-      this.current = 'Mueble';
-    }
-    var folder = gui.addFolder("Seleccion");
-    
-    var seleccion = folder.add(this.guiControls, 'current').options(this.nombres).name("Mueble");
-    
   }
        
   update () {
@@ -87,75 +76,104 @@ class Habitacion extends THREE.Mesh{
   }
 
   /* Funcion mover hacia alante comrpobando colisiones */
-  moverAdelante(){
-      this.model.position.z = this.model.position.z - this.INCREMENTOS;
+  moverAdelante(mueble){
+     mueble.position.z = mueble.position.z - this.INCREMENTOS;
 
-      var res = this.colisionaParedes();
+      var res = this.colisionaParedes(mueble);
       if(res[0]){
-        this.model.position.z = this.model.position.z + this.INCREMENTOS;
+        mueble.position.z = mueble.position.z + this.INCREMENTOS;
       }
 
-      this.model.position.y = res[1];
+      mueble.position.y = res[1];
     
   }
 
    /* Funcion mover hacia atras comrpobando colisiones */
-   moverAtras(){
+   moverAtras(mueble){
 
-      this.model.position.z = this.model.position.z + this.INCREMENTOS;
+      mueble.position.z = mueble.position.z + this.INCREMENTOS;
 
-      var res = this.colisionaParedes();
+      var res = this.colisionaParedes(mueble);
       if(res[0]){
-        this.model.position.z = this.model.position.z - this.INCREMENTOS;
+        mueble.position.z = mueble.position.z - this.INCREMENTOS;
       }
 
-      this.model.position.y = res[1];
+      mueble.position.y = res[1];
 
   }
 
    /* Funcion mover hacia izquierda comrpobando colisiones */
-   moverIzquierda(){
+   moverIzquierda(mueble){
 
-      this.model.position.x = this.model.position.x - this.INCREMENTOS;
+      mueble.position.x = mueble.position.x - this.INCREMENTOS;
 
-      var res = this.colisionaParedes();
+      var res = this.colisionaParedes(mueble);
       if(res[0]){
-        this.model.position.x = this.model.position.x + this.INCREMENTOS;
+        mueble.position.x = mueble.position.x + this.INCREMENTOS;
       }
 
-      this.model.position.y = res[1];
+      mueble.position.y = res[1];
 
 
   }
 
   /* Funcion mover hacia derecha comrpobando colisiones */
-  moverDerecha(){
-      this.model.position.x = this.model.position.x + this.INCREMENTOS;
+  moverDerecha(mueble){
+      mueble.position.x = mueble.position.x + this.INCREMENTOS;
 
-      var res = this.colisionaParedes();
+      var res = this.colisionaParedes(mueble);
       if(res[0]){
-        this.model.position.x = this.model.position.x - this.INCREMENTOS;
+        mueble.position.x = mueble.position.x - this.INCREMENTOS;
       }
 
-      this.model.position.y = res[1];
+      mueble.position.y = res[1];
+  }
+
+  /* Funcion para añadir un mueble de un tipo en unas coordenadas concretas */
+  aniadirMueble(tipoMueble, coordenadas){    var nuevoMueble = null;
+    switch (tipoMueble){
+      case "Mueble":
+        nuevoMueble = new Mueble(this.num_id, this.gui, "");
+        break;
+      case "Mesa":
+        nuevoMueble = new Mesa(this.num_id, this.gui, "");
+        break;
+    }
+
+    nuevoMueble.position.x = coordenadas.x;
+    nuevoMueble.position.y = coordenadas.y;
+    nuevoMueble.position.z = coordenadas.z;
+    //this.add(nuevoMueble);
+
+    var res = this.colisionaParedes(nuevoMueble);
+    if(!res[0]){
+      nuevoMueble.position.y = res[1];
+      this.muebles.push(nuevoMueble);
+      this.parent.pickableObjects.push(nuevoMueble);
+      this.add(nuevoMueble);
+      this.num_id++;
+    }
+
   }
 
   /* FUncion para comprobar si colisiona con las paredes */
-  colisionaParedes(){
+  colisionaParedes(mueble){
     var that = this;
     var entra = false;
+    var acaboDePonerloEncima = false;
+    var acaboDePonerloAbajo = false;
     var resultado = []; // Primera componente es si colisiona y segunda la altura
     resultado.push(false);
     resultado.push(0.0);
 
-    if(that.model.encimaDe > 0){
-      resultado[1] = that.muebles.find(function(elemento){
-        return elemento.ident == that.model.encimaDe;
+    if(mueble.encimaDe > 0){
+      resultado[1] = this.muebles.find(function(elemento){
+        return elemento.ident == mueble.encimaDe;
       }).altura;
     }
 
-    this.model.updateMatrixWorld();
-    var aux = this.model.bbox.box.clone().applyMatrix4(this.model.matrixWorld);
+    mueble.updateMatrixWorld();
+    var aux = mueble.bbox.box.clone().applyMatrix4(mueble.matrixWorld);
 
     this.paredes.forEach(element => {
       element.updateMatrixWorld();
@@ -171,48 +189,54 @@ class Habitacion extends THREE.Mesh{
     this.muebles.forEach(element => {
       element.updateMatrixWorld();
 
+      var aux = mueble.bbox.box.clone().applyMatrix4(mueble.matrixWorld);
+
       var aux2 = element.bbox.box.clone().applyMatrix4(element.matrixWorld);
       
-      // Si choca con otro mueble distinto
-      if (that.model.ident != element.ident && aux.intersectsBox(aux2)){
-        // Si el elemento se puede poner encima del otro
-        if(element.ponerEncima && that.model.estarEncima && that.model.encimaDe < 0){
-          aux.translate(new THREE.Vector3(0.0, element.altura, 0.0));
-          
-          that.muebles.forEach(element2 => {
-            element2.updateMatrixWorld();
-      
-            var aux3 = element2.bbox.box.clone().applyMatrix4(element2.matrixWorld);
-            
-            // Si se choca con otro mueble no lo subo, si no si lo subo
-            if (that.model.ident != element.ident && aux.intersectsBox(aux3)){
-              resultado[0] = true;
-            }
-            else{
-              resultado[1] = element.altura;
-              that.model.encimaDe = element.ident;
-            }
-          });
+      if(mueble.ident != element.ident){
+        // Si choca con otro mueble distinto
+        if (mueble.ident != element.ident && aux.intersectsBox(aux2)){
+          // Si el elemento se puede poner encima del otro
+          if(element.ponerEncima && mueble.estarEncima && mueble.encimaDe < 0 && !acaboDePonerloAbajo){
+            aux.translate(new THREE.Vector3(0.0, element.altura, 0.0));
 
-        }
-        else{ // Si no se puede poner encima choca
-          resultado[0] = true;
-        }
-      }
-      else if(that.model.encimaDe > 0 && that.model.ident != element.ident){ // Si ya esta encima
-        var elemento_abajo = that.muebles.find(function(elemento){
-            return elemento.ident == that.model.encimaDe;
-          });
-
-        aux.translate(new THREE.Vector3(0.0, -elemento_abajo.altura, 0.0));
-
-        elemento_abajo.updateMatrixWorld();
-
-        var aux2 = elemento_abajo.bbox.box.clone().applyMatrix4(elemento_abajo.matrixWorld);
+            that.muebles.forEach(element2 => {
+              element2.updateMatrixWorld();
         
-        if (!aux.intersectsBox(aux2)){
-          resultado[1] = 0.0;
-          that.model.encimaDe = -1;
+              var aux3 = element2.bbox.box.clone().applyMatrix4(element2.matrixWorld);
+              
+              // Si se choca con otro mueble no lo subo, si no si lo subo
+              if (mueble.ident != element.ident && aux.intersectsBox(aux3)){
+                resultado[0] = true;
+              }
+              else{
+                resultado[1] = element.altura;
+                mueble.encimaDe = element.ident;
+                acaboDePonerloEncima = true;
+              }
+            });
+
+          }
+          else{ // Si no se puede poner encima choca
+            resultado[0] = true;
+          }
+        }
+        else if(mueble.encimaDe > 0 && !acaboDePonerloEncima && mueble.ident != element.ident){ // Si ya esta encima
+          var elemento_abajo = that.muebles.find(function(elemento){
+              return elemento.ident == mueble.encimaDe;
+            });
+
+            aux.translate(new THREE.Vector3(0.0, -elemento_abajo.altura, 0.0));
+
+          elemento_abajo.updateMatrixWorld();
+
+          var aux3 = elemento_abajo.bbox.box.clone().applyMatrix4(elemento_abajo.matrixWorld);
+          
+          if (!aux.intersectsBox(aux3)){
+            resultado[1] = 0.0;
+            mueble.encimaDe = -1;
+            acaboDePonerloAbajo = true;
+          }
         }
       }
     });
