@@ -18,7 +18,8 @@ class Pared extends THREE.Mesh{
 
       // Creo la cabeza del comecocos con csv
 
-      var cubo = new THREE.BoxGeometry(10.0, 5, 0.5);
+      var cubo = new THREE.BoxGeometry(10.5, 2.5, 0.5);
+      cubo.translate(0.0, 1.25, 0.0);
 
       var texture = new THREE.TextureLoader().load('../imgs/walltexture.jpg');
       var material = new THREE.MeshPhongMaterial({map: texture});

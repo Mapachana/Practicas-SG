@@ -12,7 +12,7 @@ class Suelo extends THREE.Object3D {
     var geometryGround = new THREE.BoxGeometry (ancho,0.2,profundidad);
     
     // El material se hará con una textura de madera
-    var texture = new THREE.TextureLoader().load('../imgs/wood.jpg');
+    var texture = new THREE.TextureLoader().load('../imgs/marmol-blanco.jpg');
     var materialGround = new THREE.MeshPhongMaterial ({map: texture});
     
     // Ya se puede construir el Mesh

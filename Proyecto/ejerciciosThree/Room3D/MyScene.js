@@ -8,7 +8,6 @@ import { TrackballControls } from '../libs/TrackballControls.js'
 // Clases de mi proyecto
 
 import { Habitacion } from './Habitacion.js'
-import { Mueble } from './Mueble.js'
 
  
 /// La clase fachada del modelo
@@ -27,7 +26,7 @@ class MyScene extends THREE.Scene {
 
     // Listado de posibles muebles a añadir
     this.nombres = [];
-    this.nombres = ['Mesa', 'Taza', 'Mueble'];
+    this.nombres = ['Mesa', 'Mesa2', 'Mesita', 'Silla', 'Lampara', 'Taza', 'Cama', 'Cajonera', 'Armario'];
 
     this.modoActual = MyScene.MovingMueble;
     
@@ -111,7 +110,7 @@ class MyScene extends THREE.Scene {
       // En el contexto de una función   this   alude a la función
       this.lightIntensity = 0.5;
       this.axisOnOff = true;
-      this.nuevoMueble = 'Mueble';
+      this.nuevoMueble = 'Mesa';
       this.aniadirMueble = function(){
         that.modoActual = MyScene.AddingMueble;
       }
@@ -168,7 +167,7 @@ class MyScene extends THREE.Scene {
     var renderer = new THREE.WebGLRenderer();
     
     // Se establece un color de fondo en las imágenes que genera el render
-    renderer.setClearColor(new THREE.Color(0xEEEEEE), 1.0);
+    renderer.setClearColor(new THREE.Color(0x333333), 1.0);
     
     // Se establece el tamaño, se aprovecha la totalidad de la ventana del navegador
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -284,7 +283,7 @@ class MyScene extends THREE.Scene {
       var pickedObjects = raycaster.intersectObjects(this.pickableObjects, true);
 
       if(pickedObjects.length > 0){
-        this.selectedObject = pickedObjects[0].object.parent;
+        this.selectedObject = pickedObjects[0].object.parent.parent;
         console.log(pickedObjects.length);
         console.log(this.selectedObject.ident);
       }

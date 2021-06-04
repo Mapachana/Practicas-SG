@@ -7,7 +7,7 @@ import * as THREE from '../libs/three.module.js'
 
 import { Mueble } from './Mueble.js'
 
-class Mesa extends Mueble{
+class Cama extends Mueble{
   constructor(identificador, gui, titlegui){
     super(identificador, gui, titlegui);
     this.createGUI(gui, titlegui);
@@ -17,11 +17,11 @@ class Mesa extends Mueble{
     this.encimaDe = -1;
 
     // Mueble que puede tener otros encima y altura
-    this.ponerEncima = true;
+    this.ponerEncima = false;
     this.altura = 1.05;
 
     // Creo la geometria
-    this.cubo = new MeshMesa();
+    this.cubo = new MeshCama();
     
 
     // Creo los colisionadores
@@ -45,38 +45,53 @@ class Mesa extends Mueble{
   }
 }
 
-class MeshMesa extends THREE.Object3D{
+class MeshCama extends THREE.Object3D{
   constructor (ancho, profundidad) {
     super();
-    var pata = new THREE.BoxGeometry(0.15, 0.8, 0.15);
+    var pata = new THREE.BoxGeometry(0.15, 0.2, 0.15);
     var texture = new THREE.TextureLoader().load('../imgs/wood.jpg');
     var material = new THREE.MeshPhongMaterial ({map: texture});
 
     this.pata1 = new THREE.Mesh(pata, material);
-    this.pata1.position.set(-0.5, 0.4, 0.5);
+    this.pata1.position.set(-0.7, 0.1, 1.5);
 
     this.pata2 = new THREE.Mesh(pata, material);
-    this.pata2.position.set(-0.5, 0.4, -0.5);
+    this.pata2.position.set(-0.7, 0.1, -1.5);
 
     this.pata3 = new THREE.Mesh(pata, material);
-    this.pata3.position.set(0.5, 0.4, -0.5);
+    this.pata3.position.set(0.7, 0.1, -1.5);
 
     this.pata4 = new THREE.Mesh(pata, material);
-    this.pata4.position.set(0.5, 0.4, 0.5);
+    this.pata4.position.set(0.7, 0.1, 1.5);
 
-    var cubo = new THREE.BoxGeometry(1.15, 0.2, 1.15);
-    cubo.translate(0.0, 0.9, 0.0);
+    var base = new THREE.BoxGeometry(1.55, 0.2, 3.15);
+    base.translate(0.0, 0.3, 0.0);
 
-    this.cubo = new THREE.Mesh(cubo, material);
+    this.base = new THREE.Mesh(base, material);
+
+    var colchon = new THREE.BoxGeometry(1.55, 0.4, 3.15);
+    colchon.translate(0.0, 0.6, 0.0);
+    var materialColchon = new THREE.MeshPhongMaterial({color: 0x0000FF});
+
+    this.colchon = new THREE.Mesh(colchon, materialColchon);
+
+    var material_almohada = new THREE.MeshPhongMaterial({color: 0xFFFFFF});
+    var almohada = new THREE.BoxGeometry(1.4, 0.2, 0.5);
+    almohada.translate(0.0, 0.9, 1.3);
+
+    this.almohada = new THREE.Mesh(almohada, material_almohada);
+
     this.add(this.pata1);
     this.add(this.pata2);
     this.add(this.pata3);
     this.add(this.pata4);
-    this.add(this.cubo);
+    this.add(this.base);
+    this.add(this.colchon);
+    this.add(this.almohada);
   }
 }
 
 
-export { Mesa }
+export { Cama }
 
     

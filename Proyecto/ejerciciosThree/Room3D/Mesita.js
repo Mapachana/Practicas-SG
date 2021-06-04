@@ -7,10 +7,11 @@ import * as THREE from '../libs/three.module.js'
 
 import { Mueble } from './Mueble.js'
 
-class Mesa extends Mueble{
+class Mesita extends Mueble{
   constructor(identificador, gui, titlegui){
     super(identificador, gui, titlegui);
     this.createGUI(gui, titlegui);
+
 
     // Mueble que se puede poner encima de otros y si esta encima de alguien de quien
     this.estarEncima = false;
@@ -21,8 +22,8 @@ class Mesa extends Mueble{
     this.altura = 1.05;
 
     // Creo la geometria
-    this.cubo = new MeshMesa();
-    
+
+    this.cubo = new MeshMesita();
 
     // Creo los colisionadores
     var bboxaux = new THREE.Box3();
@@ -45,26 +46,26 @@ class Mesa extends Mueble{
   }
 }
 
-class MeshMesa extends THREE.Object3D{
+class MeshMesita extends THREE.Object3D{
   constructor (ancho, profundidad) {
     super();
-    var pata = new THREE.BoxGeometry(0.15, 0.8, 0.15);
+    var pata = new THREE.BoxGeometry(0.05, 0.8, 0.05);
     var texture = new THREE.TextureLoader().load('../imgs/wood.jpg');
     var material = new THREE.MeshPhongMaterial ({map: texture});
 
     this.pata1 = new THREE.Mesh(pata, material);
-    this.pata1.position.set(-0.5, 0.4, 0.5);
+    this.pata1.position.set(-0.3, 0.4, 0.3);
 
     this.pata2 = new THREE.Mesh(pata, material);
-    this.pata2.position.set(-0.5, 0.4, -0.5);
+    this.pata2.position.set(-0.3, 0.4, -0.3);
 
     this.pata3 = new THREE.Mesh(pata, material);
-    this.pata3.position.set(0.5, 0.4, -0.5);
+    this.pata3.position.set(0.3, 0.4, -0.3);
 
     this.pata4 = new THREE.Mesh(pata, material);
-    this.pata4.position.set(0.5, 0.4, 0.5);
+    this.pata4.position.set(0.3, 0.4, 0.3);
 
-    var cubo = new THREE.BoxGeometry(1.15, 0.2, 1.15);
+    var cubo = new THREE.CylinderGeometry(0.5, 0.5, 0.2, 10, 10);
     cubo.translate(0.0, 0.9, 0.0);
 
     this.cubo = new THREE.Mesh(cubo, material);
@@ -77,6 +78,6 @@ class MeshMesa extends THREE.Object3D{
 }
 
 
-export { Mesa }
+export { Mesita }
 
     
