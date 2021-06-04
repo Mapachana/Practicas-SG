@@ -15,6 +15,7 @@ class Coche extends THREE.Object3D{
 
     material_loader.load("../models/porsche911/911.mtl",
         function (materials) {
+            //materials.preload();
             object_loader.setMaterials(materials);
             object_loader.load("../models/porsche911/Porsche_911_GT2.obj",
                 function (object) {

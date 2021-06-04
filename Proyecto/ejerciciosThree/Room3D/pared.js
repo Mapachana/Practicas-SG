@@ -20,7 +20,8 @@ class Pared extends THREE.Mesh{
 
       var cubo = new THREE.BoxGeometry(10.0, 5, 0.5);
 
-      var material = new THREE.MeshPhongMaterial({color: 0xFFFF00});
+      var texture = new THREE.TextureLoader().load('../imgs/walltexture.jpg');
+      var material = new THREE.MeshPhongMaterial({map: texture});
 
       this.cubo = new THREE.Mesh(cubo, material);
 
@@ -42,6 +43,7 @@ class Pared extends THREE.Mesh{
   update () {
    
   }
+
 
 }
 

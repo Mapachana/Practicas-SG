@@ -1,6 +1,6 @@
 import * as THREE from '../libs/three.module.js'
 
- import { ThreeBSP } from '../libs/ThreeBSP.js'
+// import { ThreeBSP } from '../libs/ThreeBSP.js'
 // import { MTLLoader } from '../libs/MTLLoader.js'
 // import { OBJLoader } from '../libs/OBJLoader.js'
 // import * as TWEEN from '../libs/tween.esm.js'
@@ -30,15 +30,16 @@ class Mueble extends THREE.Object3D{
 
       this.cubo = new THREE.Mesh(cubo, material);
 
-      var bboxaux = new THREE.Box3();
-      bboxaux.setFromObject(this.cubo);
-      this.bbox = new THREE.Box3Helper (bboxaux, 0xFF0000);
-      this.bbox.visible = true;
+      this.bboxaux = null;
+      //this.bboxaux.setFromObject(this.cubo);
+      this.bbox = null;
+      //this.bbox.visible = true;
 
-      this.add(this.cubo);
-      this.add(this.bbox);
+      //this.add(this.cubo);
+      //this.add(this.bbox);
       
       this.nombre = "mueble generico";
+      console.log(this);
 
   }
   createGUI (gui,titleGui) {
@@ -48,6 +49,12 @@ class Mueble extends THREE.Object3D{
        
   update () {
    
+  }
+
+  eliminar(){
+    this.remove(this.cubo);
+    this.remove(this.bboxaux);
+    this.remove(this.bbox);
   }
 
 }
@@ -64,7 +71,7 @@ class Mesa extends Mueble{
     this.ponerEncima = true;
     this.altura = 1.05;
 
-    var cubo = new THREE.BoxGeometry(1.0, 1.0, 1.0, 1.0, 1.0, 1.0);
+    var cubo = new THREE.BoxGeometry(1.0, 1.0, 2.0, 1.0, 1.0, 1.0);
     cubo.translate(0.0, 0.5, 0.0);
 
     var material = new THREE.MeshPhongMaterial({color: 0xFFFF00});

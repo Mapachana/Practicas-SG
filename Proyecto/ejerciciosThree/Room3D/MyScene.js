@@ -27,7 +27,7 @@ class MyScene extends THREE.Scene {
 
     // Listado de posibles muebles a añadir
     this.nombres = [];
-    this.nombres = ['Mesa', 'Mueble'];
+    this.nombres = ['Mesa', 'Taza', 'Mueble'];
 
     this.modoActual = MyScene.MovingMueble;
     
@@ -42,9 +42,6 @@ class MyScene extends THREE.Scene {
     
     // Tendremos una cámara con un control de movimiento con el ratón
     this.createCamera ();
-
-    // Un suelo 
-    this.createGround ();
     
     
     // Y unos ejes. Imprescindibles para orientarnos sobre dónde están las cosas
@@ -100,26 +97,7 @@ class MyScene extends THREE.Scene {
     this.cameraControl.enabled = false;
   }
 
-  createGround () {
-    // El suelo es un Mesh, necesita una geometría y un material.
-    
-    // La geometría es una caja con muy poca altura
-    var geometryGround = new THREE.BoxGeometry (50,0.2,50);
-    
-    // El material se hará con una textura de madera
-    var texture = new THREE.TextureLoader().load('../imgs/wood.jpg');
-    var materialGround = new THREE.MeshPhongMaterial ({map: texture});
-    
-    // Ya se puede construir el Mesh
-    this.ground = new THREE.Mesh (geometryGround, materialGround);
-    
-    // Todas las figuras se crean centradas en el origen.
-    // El suelo lo bajamos la mitad de su altura para que el origen del mundo se quede en su lado superior
-    this.ground.position.y = -0.1;
-    
-    // Que no se nos olvide añadirlo a la escena, que en este caso es  this
-    this.add (this.ground);
-  }
+  
   
   
   createGUI () {
@@ -267,6 +245,15 @@ class MyScene extends THREE.Scene {
       else if (String.fromCharCode(x) == "D"){
         this.model.moverDerecha(this.selectedObject);
       }
+      else if (String.fromCharCode(x) == "Q"){
+        this.model.rotarIzquierda(this.selectedObject);
+      }
+      else if (String.fromCharCode(x) == "E"){
+        this.model.rotarDerecha(this.selectedObject);
+      }
+      else if (String.fromCharCode(x) == "R"){
+        this.model.eliminarMueble(this.selectedObject);
+      }
     }
 
     switch (x) {
@@ -285,6 +272,7 @@ class MyScene extends THREE.Scene {
   }
 
   onMouseDown (event) {
+    console.log("picking");
     if(this.modoActual == MyScene.MovingMueble){
       var mouse = new THREE.Vector2();
       mouse.x = (event.clientX/window.innerWidth)*2-1;
@@ -297,21 +285,17 @@ class MyScene extends THREE.Scene {
 
       if(pickedObjects.length > 0){
         this.selectedObject = pickedObjects[0].object.parent;
+        console.log(pickedObjects.length);
+        console.log(this.selectedObject.ident);
       }
     }
     else if(this.modoActual == MyScene.AddingMueble){
-      var mouse = new THREE.Vector2 ();
-      mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-      mouse.y = 1 - 2 * (event.clientY / window.innerHeight);
-
-      var raycaster = new THREE.Raycaster();
-      raycaster.setFromCamera(mouse, this.getCamera());
-
-      var pickedObjects = raycaster.intersectObjects([this.ground]);
-      if (pickedObjects.length > 0) {
-        var coords = new THREE.Vector3 (pickedObjects[0].point.x, 0.0, pickedObjects[0].point.z);
+      var coords = this.model.suelo.calcularCoordenadas(event, this.getCamera());
+      if (coords != null){
         this.model.aniadirMueble(this.guiControls.nuevoMueble, coords);
       }
+
+
       
     }
   }
