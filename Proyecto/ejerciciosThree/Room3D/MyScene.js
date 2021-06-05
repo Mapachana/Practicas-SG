@@ -21,6 +21,7 @@ class MyScene extends THREE.Scene {
     this.nombres = [];
     this.nombres = ['Mesa', 'Mesa2', 'Mesita', 'Silla', 'Lampara', 'Taza', 'Cama', 'Cajonera', 'Armario'];
 
+    // Listado de opciones de colores para la luz
     this.coloresLuz = [];
     this.coloresLuz = ['Neutro', 'Blanco', 'Azul', 'Rojo', 'Amarillo', 'Verde'];
 
@@ -29,33 +30,29 @@ class MyScene extends THREE.Scene {
     // Se crea la interfaz gráfica de usuario
     this.gui = this.createGUI ();
     
-    // Construimos los distinos elementos que tendremos en la escena
-    
-    // Todo elemento que se desee sea tenido en cuenta en el renderizado de la escena debe pertenecer a esta. Bien como hijo de la escena (this en esta clase) o como hijo de un elemento que ya esté en la escena.
-    // Tras crear cada elemento se añadirá a la escena con   this.add(variable)
+    // Se crean las luces
     this.createLights ();
     
-    // Tendremos una cámara con un control de movimiento con el ratón
+    // Se crea la camara
     this.createCamera ();
 
     // Creo el reproductor de sonidos
     this.createSonidos();
     
-    
-    // Y unos ejes. Imprescindibles para orientarnos sobre dónde están las cosas
+    // Se crean los ejes
     this.axis = new THREE.AxesHelper (5);
     this.add (this.axis);
+
+    // Raycaster para no crear uno nuevo cada vez
+    this.raycaster = new THREE.Raycaster();
     
-    
-    // Por último creamos el modelo.
-    // El modelo puede incluir su parte de la interfaz gráfica de usuario. Le pasamos la referencia a 
-    // la gui y el texto bajo el que se agruparán los controles de la interfaz que añada el modelo.
+    /// Instancio la habitacion
     this.model = new Habitacion(this.gui, "Controles del bicho", this.sonidoAdd, this.audioLoader);
     this.add (this.model);
 
-
-    // Objeto seleccionado
+    // Variable que contiene el objeto seleccionado actual
     this.selectedObject = this.model.muebles[0];
+    
     // Objetos que se pueden seleccionar
     this.pickableObjects = [];
 
@@ -68,6 +65,7 @@ class MyScene extends THREE.Scene {
  
   }
   
+  /* Funcion para crear la camara */
   createCamera () {
     // Para crear una cámara le indicamos
     //   El ángulo del campo de visión vértical en grados sexagesimales
@@ -95,18 +93,13 @@ class MyScene extends THREE.Scene {
     this.cameraControl.enabled = false;
   }
 
-  
-  
-  
+  /* Funcion para crear la interfaz de usuario */
   createGUI () {
     // Se crea la interfaz gráfica de usuario
     var gui = new GUI();
     var that = this;
-    // La escena le va a añadir sus propios controles. 
-    // Se definen mediante una   new function()
-    // En este caso la intensidad de la luz y si se muestran o no los ejes
+
     this.guiControls = new function() {
-      // En el contexto de una función   this   alude a la función
       this.lightIntensity = 0.5;
       this.lightColor = 'Neutro';
       this.axisOnOff = true;
@@ -120,20 +113,21 @@ class MyScene extends THREE.Scene {
       }
     }
 
+    // Carpeta para añadir muebles, se selecciona el tipo de mueble y se activa el modo añadir
     var folderAddMuebles = gui.addFolder("Aniadir");
     
     var tipo_mueble = folderAddMuebles.add(this.guiControls, 'nuevoMueble').options(this.nombres).name("Mueble");
     var aniadir = folderAddMuebles.add(this.guiControls, 'aniadirMueble').name("Añadir");
 
+    // Carpeta para cambiar al modo mover muebles
     var folderMoveMuebles = gui.addFolder("Mover");
 
     var mover = folderMoveMuebles.add(this.guiControls, 'moverMueble').name("Mover");
   
-
-    // Se crea una sección para los controles de esta clase
+    // Carpeta para controlar la luz y ejes
     var folder = gui.addFolder ('Luz y Ejes');
     
-    // Se le añade un control para la intensidad de la luz
+    // Control de intensidad de la luz
     folder.add (this.guiControls, 'lightIntensity', 0, 1, 0.1).name('Intensidad de la Luz : ').onChange(function(){
       that.spotLight.intensity = that.guiControls.lightIntensity;
     });
@@ -161,7 +155,7 @@ class MyScene extends THREE.Scene {
       }
     });
     
-    // Y otro para mostrar u ocultar los ejes
+    // Control de mostrar o no los ejes
     folder.add (this.guiControls, 'axisOnOff').name ('Mostrar ejes : ').onChange(function(){
       that.axis.visible = that.guiControls.axisOnOff;
     });
@@ -169,6 +163,7 @@ class MyScene extends THREE.Scene {
     return gui;
   }
   
+  /* Funcion para crear las luces */
   createLights () {
     // Se crea una luz ambiental
     this.ambientLight = new THREE.AmbientLight(0xccddee, 0.35);
@@ -183,6 +178,7 @@ class MyScene extends THREE.Scene {
     this.add (this.spotLight);
   }
 
+  /* Funcion para crear los reproductores de sonidos */
   createSonidos(){
     // create an AudioListener and add it to the camera
     this.listener = new THREE.AudioListener();
@@ -207,6 +203,7 @@ class MyScene extends THREE.Scene {
     });
   }
   
+  /* Funcion para crear el render */
   createRenderer (myCanvas) {
     // Se recibe el lienzo sobre el que se van a hacer los renderizados. Un div definido en el html.
     
@@ -225,9 +222,8 @@ class MyScene extends THREE.Scene {
     return renderer;  
   }
   
+  /* Funcion para devolver la camara */
   getCamera () {
-    // En principio se devuelve la única cámara que tenemos
-    // Si hubiera varias cámaras, este método decidiría qué cámara devuelve cada vez que es consultado
     return this.camera;
   }
 
@@ -236,6 +232,7 @@ class MyScene extends THREE.Scene {
     return this.cameraControl;
   }
   
+  /* Funcion para modificar el ratio de la camara */
   setCameraAspect (ratio) {
     // Cada vez que el usuario modifica el tamaño de la ventana desde el gestor de ventanas de
     // su sistema operativo hay que actualizar el ratio de aspecto de la cámara
@@ -266,8 +263,10 @@ class MyScene extends THREE.Scene {
     requestAnimationFrame(() => this.update())
   }
 
+  /* Funcion que se ejecuta cada vez que se pulsa una tecla */
   onKeyDown (event) {
     var x = event.which || event.keyCode;
+    /* Si el modo actual es mover, entonces se mueve/rota/elimina un mueble */
     if(this.modoActual == MyScene.MovingMueble){
       if (String.fromCharCode(x) == "W"){
         this.model.moverAdelante(this.selectedObject);
@@ -292,6 +291,7 @@ class MyScene extends THREE.Scene {
       }
     }
 
+    // Activa los controles de la camara
     switch (x) {
       case 17 : // Ctrl key
         this.getCameraControls().enabled = true;
@@ -299,6 +299,7 @@ class MyScene extends THREE.Scene {
     
   }
 
+  /* Funcion que se ejecuta cada ves que se levanta una tecla, solo desactiva los controles de la camara */
   onKeyUp (event) {
     var x = event.which || event.keyCode;
     switch (x) {
@@ -307,17 +308,17 @@ class MyScene extends THREE.Scene {
     }
   }
 
+  /* Funcion que se ejecuta cuando se pulsa con el raton */
   onMouseDown (event) {
-    console.log("picking");
+    // Si el modo actual es mover, entonces se selecciona un mueble
     if(this.modoActual == MyScene.MovingMueble){
       var mouse = new THREE.Vector2();
       mouse.x = (event.clientX/window.innerWidth)*2-1;
       mouse.y = 1-2*(event.clientY/window.innerHeight);
 
-      var raycaster = new THREE.Raycaster();
-      raycaster.setFromCamera(mouse, this.getCamera());
+      this.raycaster.setFromCamera(mouse, this.getCamera());
 
-      var pickedObjects = raycaster.intersectObjects(this.pickableObjects, true);
+      var pickedObjects = this.raycaster.intersectObjects(this.pickableObjects, true);
 
       if(pickedObjects.length > 0){
         this.selectedObject = pickedObjects[0].object.parent.parent;
@@ -325,7 +326,7 @@ class MyScene extends THREE.Scene {
         console.log(this.selectedObject.ident);
       }
     }
-    else if(this.modoActual == MyScene.AddingMueble){
+    else if(this.modoActual == MyScene.AddingMueble){ // Si el modo es añadir, se añade un objeto en las coordenadas indicadas
       var coords = this.model.suelo.calcularCoordenadas(event, this.getCamera());
       if (coords != null){
         this.model.aniadirMueble(this.guiControls.nuevoMueble, coords);
@@ -355,7 +356,7 @@ $(function () {
   // Añado los listener de la aplicacion
   window.addEventListener ("keydown", (event) => scene.onKeyDown (event), true); // Pulsar tecla
   window.addEventListener ("keyup", (event) => scene.onKeyUp(event), true); // Levantar tecla
-  window.addEventListener ("mousedown", (event) => scene.onMouseDown(event), true); // Pulsar con el raton (picking)
+  window.addEventListener ("mousedown", (event) => scene.onMouseDown(event), true); // Pulsar con el raton (picking y añadir mueble)
   
   // Que no se nos olvide, la primera visualización.
   scene.update();

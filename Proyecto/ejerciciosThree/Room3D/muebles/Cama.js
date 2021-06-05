@@ -22,7 +22,6 @@ class Cama extends Mueble{
 
     // Creo la geometria
     this.cubo = new MeshCama();
-    
 
     // Creo los colisionadores
     var bboxaux = new THREE.Box3();
@@ -34,8 +33,7 @@ class Cama extends Mueble{
     this.add(this.cubo);
     this.add(this.bbox);
 
-
-    this.nombre="mesa";
+    this.nombre="Cama";
 
   }
   createGUI (gui,titleGui) {
@@ -45,6 +43,7 @@ class Cama extends Mueble{
   }
 }
 
+/* Clase para crear el mesh del mueble */
 class MeshCama extends THREE.Object3D{
   constructor (ancho, profundidad) {
     super();

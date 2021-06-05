@@ -23,6 +23,7 @@ class Mueble extends THREE.Object3D{
       this.ponerEncima = false;
       this.altura = 1.05;
 
+      // Creo la geometria
       var cubo = new THREE.BoxGeometry(1.0, 1.0, 1.0);
       cubo.translate(0.0, 0.5, 0.0);
 
@@ -30,21 +31,17 @@ class Mueble extends THREE.Object3D{
 
       this.cubo = new THREE.Mesh(cubo, material);
 
+      // Creo los colisionadores
       this.bboxaux = null;
-
       this.bbox = null;
       
       this.nombre = "mueble generico";
-      console.log(this);
 
   }
   createGUI (gui,titleGui) {
-
-    
   }
        
   update () {
-   
   }
 
 }

@@ -21,9 +21,6 @@ class Taza extends Mueble{
     this.altura = 0.00;
 
     // Creo la geometria
-
-    
-
     this.cubo = new MeshTaza();
 
     // Creo los colisionadores
@@ -36,8 +33,7 @@ class Taza extends Mueble{
     this.add(this.cubo);
     this.add(this.bbox);
 
-
-    this.nombre="taza";
+    this.nombre="Taza";
 
   }
   createGUI (gui,titleGui) {
@@ -47,6 +43,7 @@ class Taza extends Mueble{
   }
 }
 
+/* Clase para crear el mesh del mueble */
 class MeshTaza extends THREE.Object3D{
   constructor (ancho, profundidad) {
     super();

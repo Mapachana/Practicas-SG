@@ -22,7 +22,6 @@ class Armario extends Mueble{
 
     // Creo la geometria
     this.cubo = new MeshArmario();
-    
 
     // Creo los colisionadores
     var bboxaux = new THREE.Box3();
@@ -34,8 +33,7 @@ class Armario extends Mueble{
     this.add(this.cubo);
     this.add(this.bbox);
 
-
-    this.nombre="mesa";
+    this.nombre="Armario";
 
   }
   createGUI (gui,titleGui) {
@@ -45,6 +43,7 @@ class Armario extends Mueble{
   }
 }
 
+/* Clase para crear el mesh del mueble */
 class MeshArmario extends THREE.Object3D{
   constructor (ancho, profundidad) {
     super();

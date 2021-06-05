@@ -12,7 +12,6 @@ class Silla extends Mueble{
     super(identificador, gui, titlegui);
     this.createGUI(gui, titlegui);
 
-
     // Mueble que se puede poner encima de otros y si esta encima de alguien de quien
     this.estarEncima = false;
     this.encimaDe = -1;
@@ -22,7 +21,6 @@ class Silla extends Mueble{
     this.altura = 0.0;
 
     // Creo la geometria
-
     this.cubo = new MeshSilla();
 
     // Creo los colisionadores
@@ -35,8 +33,7 @@ class Silla extends Mueble{
     this.add(this.cubo);
     this.add(this.bbox);
 
-
-    this.nombre="mesa";
+    this.nombre="Silla";
 
   }
   createGUI (gui,titleGui) {
@@ -46,6 +43,7 @@ class Silla extends Mueble{
   }
 }
 
+/* Clase para crear el mesh del mueble */
 class MeshSilla extends THREE.Object3D{
   constructor (ancho, profundidad) {
     super();

@@ -22,7 +22,6 @@ class Cajonera extends Mueble{
 
     // Creo la geometria
     this.cubo = new MeshCajonera();
-    
 
     // Creo los colisionadores
     var bboxaux = new THREE.Box3();
@@ -34,8 +33,7 @@ class Cajonera extends Mueble{
     this.add(this.cubo);
     this.add(this.bbox);
 
-
-    this.nombre="mesa";
+    this.nombre="Cajonera";
 
   }
   createGUI (gui,titleGui) {
@@ -45,6 +43,7 @@ class Cajonera extends Mueble{
   }
 }
 
+/* Clase para crear el mesh del mueble */
 class MeshCajonera extends THREE.Object3D{
   constructor (ancho, profundidad) {
     super();
