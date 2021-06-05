@@ -1,4 +1,4 @@
-import * as THREE from '../libs/three.module.js'
+import * as THREE from '../../libs/three.module.js'
 
 // import { ThreeBSP } from '../libs/ThreeBSP.js'
 // import { MTLLoader } from '../libs/MTLLoader.js'
@@ -7,11 +7,10 @@ import * as THREE from '../libs/three.module.js'
 
 import { Mueble } from './Mueble.js'
 
-class Silla extends Mueble{
+class Cama extends Mueble{
   constructor(identificador, gui, titlegui){
     super(identificador, gui, titlegui);
     this.createGUI(gui, titlegui);
-
 
     // Mueble que se puede poner encima de otros y si esta encima de alguien de quien
     this.estarEncima = false;
@@ -19,11 +18,11 @@ class Silla extends Mueble{
 
     // Mueble que puede tener otros encima y altura
     this.ponerEncima = false;
-    this.altura = 0.0;
+    this.altura = 1.05;
 
     // Creo la geometria
-
-    this.cubo = new MeshSilla();
+    this.cubo = new MeshCama();
+    
 
     // Creo los colisionadores
     var bboxaux = new THREE.Box3();
@@ -46,51 +45,53 @@ class Silla extends Mueble{
   }
 }
 
-class MeshSilla extends THREE.Object3D{
+class MeshCama extends THREE.Object3D{
   constructor (ancho, profundidad) {
     super();
-    var pata = new THREE.BoxGeometry(0.15, 0.4, 0.15);
-    var texture = new THREE.TextureLoader().load('../imgs/wood.jpg');
+    var pata = new THREE.BoxGeometry(0.15, 0.2, 0.15);
+    var texture = new THREE.TextureLoader().load('./imgs/wood.jpg');
     var material = new THREE.MeshPhongMaterial ({map: texture});
 
     this.pata1 = new THREE.Mesh(pata, material);
-    this.pata1.position.set(-0.25, 0.2, 0.25);
+    this.pata1.position.set(-0.7, 0.1, 1.5);
 
     this.pata2 = new THREE.Mesh(pata, material);
-    this.pata2.position.set(-0.25, 0.2, -0.25);
+    this.pata2.position.set(-0.7, 0.1, -1.5);
 
     this.pata3 = new THREE.Mesh(pata, material);
-    this.pata3.position.set(0.25, 0.2, -0.25);
+    this.pata3.position.set(0.7, 0.1, -1.5);
 
     this.pata4 = new THREE.Mesh(pata, material);
-    this.pata4.position.set(0.25, 0.2, 0.25);
+    this.pata4.position.set(0.7, 0.1, 1.5);
 
-    this.respaldo1 = new THREE.Mesh(pata, material);
-    this.respaldo1.position.set(0.25, 0.8, 0.25);
+    var base = new THREE.BoxGeometry(1.55, 0.2, 3.15);
+    base.translate(0.0, 0.3, 0.0);
 
-    this.respaldo2 = new THREE.Mesh(pata, material);
-    this.respaldo2.position.set(-0.25, 0.8, 0.25);
+    this.base = new THREE.Mesh(base, material);
 
-    this.respaldo3 = new THREE.Mesh(pata, material);
-    this.respaldo3.rotation.z = Math.PI/2;
-    this.respaldo3.position.set(0.0, 0.9, 0.25);
+    var colchon = new THREE.BoxGeometry(1.55, 0.4, 3.15);
+    colchon.translate(0.0, 0.6, 0.0);
+    var materialColchon = new THREE.MeshPhongMaterial({color: 0x0000FF});
 
-    var cubo = new THREE.BoxGeometry(0.65, 0.2, 0.65);
-    cubo.translate(0.0, 0.5, 0.0);
+    this.colchon = new THREE.Mesh(colchon, materialColchon);
 
-    this.cubo = new THREE.Mesh(cubo, material);
+    var material_almohada = new THREE.MeshPhongMaterial({color: 0xFFFFFF});
+    var almohada = new THREE.BoxGeometry(1.4, 0.2, 0.5);
+    almohada.translate(0.0, 0.9, 1.3);
+
+    this.almohada = new THREE.Mesh(almohada, material_almohada);
+
     this.add(this.pata1);
     this.add(this.pata2);
     this.add(this.pata3);
     this.add(this.pata4);
-    this.add(this.respaldo1);
-    this.add(this.respaldo2);
-    this.add(this.respaldo3);
-    this.add(this.cubo);
+    this.add(this.base);
+    this.add(this.colchon);
+    this.add(this.almohada);
   }
 }
 
 
-export { Silla }
+export { Cama }
 
     

@@ -8,20 +8,14 @@ import * as THREE from '../libs/three.module.js'
 
 class Pared extends THREE.Mesh{
 
-  constructor(gui, titlegui){
+  constructor(tamanio){
       super();
-      this.createGUI(gui, titlegui);
-      /* Aqui instanciaria le otro comecocos si me hubiera dado tiepo
-      this.coso = new Bicho(gui, titlegui);
-      this.add(this.coso);*/
-      // Como no me ha dado tiempo a hacer el otro comecocos para animar la boca lo voy a hacer con el otro mas simple
 
-      // Creo la cabeza del comecocos con csv
-
-      var cubo = new THREE.BoxGeometry(10.5, 2.5, 0.5);
+      var largo = 2*tamanio+0.5;
+      var cubo = new THREE.BoxGeometry(largo, 2.5, 0.5);
       cubo.translate(0.0, 1.25, 0.0);
 
-      var texture = new THREE.TextureLoader().load('../imgs/walltexture.jpg');
+      var texture = new THREE.TextureLoader().load('./imgs/walltexture.jpg');
       var material = new THREE.MeshPhongMaterial({map: texture});
 
       this.cubo = new THREE.Mesh(cubo, material);
@@ -29,20 +23,13 @@ class Pared extends THREE.Mesh{
       var bboxaux = new THREE.Box3();
       bboxaux.setFromObject(this.cubo);
       this.bbox = new THREE.Box3Helper (bboxaux, 0xFF0000);
-      // this.bbox.visible = false; Hace visible o invisible las colisiones
-      //this.bbox.visible = true;
 
       this.add(this.cubo);
       this.add(this.bbox);
 
   }
-  createGUI (gui,titleGui) {
-
-    
-  }
        
-  update () {
-   
+  update () { 
   }
 
 

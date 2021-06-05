@@ -1,4 +1,4 @@
-import * as THREE from '../libs/three.module.js'
+import * as THREE from '../../libs/three.module.js'
 
 // import { ThreeBSP } from '../libs/ThreeBSP.js'
 // import { MTLLoader } from '../libs/MTLLoader.js'
@@ -7,7 +7,7 @@ import * as THREE from '../libs/three.module.js'
 
 import { Mueble } from './Mueble.js'
 
-class Mesita extends Mueble{
+class Mesa2 extends Mueble{
   constructor(identificador, gui, titlegui){
     super(identificador, gui, titlegui);
     this.createGUI(gui, titlegui);
@@ -23,7 +23,7 @@ class Mesita extends Mueble{
 
     // Creo la geometria
 
-    this.cubo = new MeshMesita();
+    this.cubo = new MeshMesa2();
 
     // Creo los colisionadores
     var bboxaux = new THREE.Box3();
@@ -46,26 +46,26 @@ class Mesita extends Mueble{
   }
 }
 
-class MeshMesita extends THREE.Object3D{
+class MeshMesa2 extends THREE.Object3D{
   constructor (ancho, profundidad) {
     super();
-    var pata = new THREE.BoxGeometry(0.05, 0.8, 0.05);
-    var texture = new THREE.TextureLoader().load('../imgs/wood.jpg');
+    var pata = new THREE.BoxGeometry(0.15, 0.8, 0.15);
+    var texture = new THREE.TextureLoader().load('./imgs/wood.jpg');
     var material = new THREE.MeshPhongMaterial ({map: texture});
 
     this.pata1 = new THREE.Mesh(pata, material);
-    this.pata1.position.set(-0.3, 0.4, 0.3);
+    this.pata1.position.set(-0.5, 0.4, 0.5);
 
     this.pata2 = new THREE.Mesh(pata, material);
-    this.pata2.position.set(-0.3, 0.4, -0.3);
+    this.pata2.position.set(-0.5, 0.4, -0.5);
 
     this.pata3 = new THREE.Mesh(pata, material);
-    this.pata3.position.set(0.3, 0.4, -0.3);
+    this.pata3.position.set(0.5, 0.4, -0.5);
 
     this.pata4 = new THREE.Mesh(pata, material);
-    this.pata4.position.set(0.3, 0.4, 0.3);
+    this.pata4.position.set(0.5, 0.4, 0.5);
 
-    var cubo = new THREE.CylinderGeometry(0.5, 0.5, 0.2, 10, 10);
+    var cubo = new THREE.CylinderGeometry(1.15, 1.15, 0.2, 10, 10);
     cubo.translate(0.0, 0.9, 0.0);
 
     this.cubo = new THREE.Mesh(cubo, material);
@@ -78,6 +78,6 @@ class MeshMesita extends THREE.Object3D{
 }
 
 
-export { Mesita }
+export { Mesa2 }
 
     

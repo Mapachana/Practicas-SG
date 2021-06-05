@@ -7,51 +7,62 @@ import * as THREE from '../libs/three.module.js'
 
 // Clases de mi proyecto
 
-import { Mesa } from './Mesa.js'
-import { Taza } from './Taza.js'
-import { Silla } from './Silla.js'
-import { Mesa2 } from './Mesa2.js'
-import { Lampara } from './Lampara.js'
-import { Cama } from './Cama.js'
-import { Mesita } from './Mesita.js'
-import { Cajonera } from './Cajonera.js'
-import { Armario } from './Armario.js'
+import { Mesa } from './muebles/Mesa.js'
+import { Taza } from './muebles/Taza.js'
+import { Silla } from './muebles/Silla.js'
+import { Mesa2 } from './muebles/Mesa2.js'
+import { Lampara } from './muebles/Lampara.js'
+import { Cama } from './muebles/Cama.js'
+import { Mesita } from './muebles/Mesita.js'
+import { Cajonera } from './muebles/Cajonera.js'
+import { Armario } from './muebles/Armario.js'
 import { Pared } from './pared.js'
 import { Suelo } from './Suelo.js'
 
 class Habitacion extends THREE.Mesh{
 
-  constructor(gui, titlegui){
+  constructor(gui, titlegui, sonido, loadSonido){
       super();
        
       this.createGUI(gui, titlegui);
 
-      this.suelo = new Suelo(10.5, 10.5);
-      this.add(this.suelo);
+      // Cojo el reproductor de sonidos
+      this.sonidoAdd = sonido;
+      this.audioLoader = loadSonido;
 
+      // Atributo de cuanto avanza un mueble por cada pulsacion de teclas
       this.INCREMENTOS = 0.05;
 
+      // Ancho y largo de la habitacion
+      this.ANCHO = 5;
+      this.LARGO = 5;
+
+      // Identificador para ir asignandolo a los muebles
       this.num_id = 1;
 
-      this.paredes = [];
-      this.muebles = []
+      // Instancio el suelo
+      this.suelo = new Suelo(this.LARGO, this.ANCHO);
+      this.add(this.suelo);
 
-      var pared1 = new Pared();
-      pared1.position.z = -5;
+      // Instancio las paredes
+      this.paredes = [];
+
+      var pared1 = new Pared(this.LARGO);
+      pared1.position.z = -this.ANCHO;
       this.paredes.push(pared1);
 
-      var pared2 = new Pared();
-      pared2.position.z = 5;
+      var pared2 = new Pared(this.LARGO);
+      pared2.position.z = this.ANCHO;
       this.paredes.push(pared2);
 
-      var pared3 = new Pared();
+      var pared3 = new Pared(this.ANCHO);
       pared3.rotation.y = Math.PI/2;
-      pared3.position.x = -5;
+      pared3.position.x = -this.LARGO;
       this.paredes.push(pared3);
 
-      var pared4 = new Pared();
+      var pared4 = new Pared(this.ANCHO);
       pared4.rotation.y = Math.PI/2;
-      pared4.position.x = 5;
+      pared4.position.x = this.LARGO;
       this.paredes.push(pared4);
 
       var that = this;
@@ -59,25 +70,29 @@ class Habitacion extends THREE.Mesh{
         that.add(element);
       });
 
-      
-      this.model = new Armario(this.num_id, this.gui, "Controles del bicho");
-      //this.add (this.model);
-      this.muebles.push(this.model);
+      // Array de muebles en la habitacion
+      this.muebles = [];
 
+      // Añado muebles iniciales de ejemplo
+      var mueble1 = new Mesa(this.num_id, this.gui, "");
+      this.muebles.push(mueble1);
       this.num_id++;
 
-      this.estorbo = new Mesa(this.num_id, this.gui, "Controles del bicho");
+      var mueble2 = new Lampara(this.num_id, this.gui, "");
+      mueble2.position.set(0.0, mueble1.altura, 0.0);
+      mueble2.encimaDe = mueble1.ident;
+      this.muebles.push(mueble2);
       this.num_id++;
 
-      this.estorbo.position.x = 2.0;
-      this.estorbo.position.z = 2.0;
-      this.muebles.push(this.estorbo);
+      var mueble3 = new Silla(this.num_id, this.gui, "");
+      mueble3.position.set(0.0, 0.0, 1.0);
+      this.muebles.push(mueble3);
+      this.num_id++;
  
+      // Añado los muebles
       this.muebles.forEach(element => {
         that.add(element);
       });
-
-      this.createGUI(gui, titlegui);
 
 
   }
@@ -169,7 +184,8 @@ class Habitacion extends THREE.Mesh{
   }
 
   /* Funcion para añadir un mueble de un tipo en unas coordenadas concretas */
-  aniadirMueble(tipoMueble, coordenadas){    var nuevoMueble = null;
+  aniadirMueble(tipoMueble, coordenadas){    
+    var nuevoMueble = null;
     switch (tipoMueble){
       case "Mesa":
         nuevoMueble = new Mesa(this.num_id, this.gui, "");
@@ -205,30 +221,50 @@ class Habitacion extends THREE.Mesh{
     nuevoMueble.position.z = coordenadas.z;
 
     var res = this.colisionaParedes(nuevoMueble);
+    // Si no colisiona lo instancio y añado a los arrays correspondientes
     if(!res[0]){
       nuevoMueble.position.y = res[1];
       this.muebles.push(nuevoMueble);
       this.parent.pickableObjects.push(nuevoMueble.cubo);
       this.add(nuevoMueble);
       this.num_id++;
+      this.sonidoMueble();
     }
 
   }
 
   /* Funcion para eliminar un mueble */
   eliminarMueble(mueble){
-    console.log(this.muebles);
-    var indiceMueble = this.muebles.findIndex(function(elemento){
-      return elemento.ident == mueble.ident;
+    var tieneMuebleEncima = this.muebles.find(function(elemento){
+      return elemento.encimaDe == mueble.ident;
     });
-    var indiceSeleccionable = this.parent.pickableObjects.findIndex(function(elemento){
-      return elemento.id == mueble.cubo.id;
+
+    // Si el mueble tiene otro mueble encima no se puede eliminar, compruebo que no tiene ninguno encima y lo elimino
+    if(typeof tieneMuebleEncima == 'undefined'){
+      var indiceMueble = this.muebles.findIndex(function(elemento){
+        return elemento.ident == mueble.ident;
+      });
+
+      var indiceSeleccionable = this.parent.pickableObjects.findIndex(function(elemento){
+        return elemento.id == mueble.cubo.id;
+      });
+
+      this.muebles.splice(indiceMueble, 1);
+      this.parent.pickableObjects.splice(indiceSeleccionable, 1);
+      this.remove(mueble);
+    }
+    
+  }
+
+  /* Funcion para que suene pop al añadir un mueble */
+  sonidoMueble(){
+      var that = this;
+      this.audioLoader.load( './sonidos/menu.ogg', function( buffer ) {
+      that.sonidoAdd.setBuffer( buffer );
+      that.sonidoAdd.setLoop( false );
+      that.sonidoAdd.setVolume( 0.7 );
+      that.sonidoAdd.play();
     });
-    this.muebles.splice(indiceMueble, 1);
-    this.parent.pickableObjects.splice(indiceSeleccionable, 1);
-    //mueble.eliminar();
-    this.remove(mueble);
-    console.log(this.muebles);
   }
 
   /* Funcion para comprobar si colisiona con las paredes */
@@ -323,17 +359,17 @@ class Habitacion extends THREE.Mesh{
           
           // Aqui hay que comprobar que cuando lo bajo no choque con nadie
 
-          that.muebles.forEach(element => {
-            var aux4 = element.bbox.box.clone().applyMatrix4(element.matrixWorld);
-            if(mueble.ident != element.ident && aux.intersectsBox(aux4)){
-              if(mueble.estarEncima && element.ponerEncima){
-                if(element.altura > elemento_abajo.altura){
-                  resultado[1] = element.altura;
-                  mueble.encimaDe = element.ident;
+          that.muebles.forEach(element2 => {
+            var aux4 = element2.bbox.box.clone().applyMatrix4(element2.matrixWorld);
+            if(mueble.ident != element2.ident && aux.intersectsBox(aux4)){
+              if(mueble.estarEncima && element2.ponerEncima){
+                if(element2.altura > elemento_abajo.altura){
+                  resultado[1] = element2.altura;
+                  mueble.encimaDe = element2.ident;
                 }
                 if(!aux.intersectsBox(aux3)){ // Si no colisiona  con el anterior objeto con el que estaba encima pongo el nuevo
-                  resultado[1] = element.altura;
-                  mueble.encimaDe = element.ident
+                  resultado[1] = element2.altura;
+                  mueble.encimaDe = element2.ident
                 }
                 acaboDePonerloEncima = true;
               }

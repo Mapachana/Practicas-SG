@@ -9,15 +9,8 @@ import { TrackballControls } from '../libs/TrackballControls.js'
 
 import { Habitacion } from './Habitacion.js'
 
- 
-/// La clase fachada del modelo
-/**
- * Usaremos una clase derivada de la clase Scene de Three.js para llevar el control de la escena y de todo lo que ocurre en ella.
- */
-
 class MyScene extends THREE.Scene {
-  // Recibe el  div  que se ha creado en el  html  que va a ser el lienzo en el que mostrar
-  // la visualización de la escena
+  // Recibe el  div  que se ha creado en el  html  que va a ser el lienzo en el que mostrar la visualización de la escena
   constructor (myCanvas) { 
     super();
     
@@ -27,6 +20,9 @@ class MyScene extends THREE.Scene {
     // Listado de posibles muebles a añadir
     this.nombres = [];
     this.nombres = ['Mesa', 'Mesa2', 'Mesita', 'Silla', 'Lampara', 'Taza', 'Cama', 'Cajonera', 'Armario'];
+
+    this.coloresLuz = [];
+    this.coloresLuz = ['Neutro', 'Blanco', 'Azul', 'Rojo', 'Amarillo', 'Verde'];
 
     this.modoActual = MyScene.MovingMueble;
     
@@ -41,6 +37,9 @@ class MyScene extends THREE.Scene {
     
     // Tendremos una cámara con un control de movimiento con el ratón
     this.createCamera ();
+
+    // Creo el reproductor de sonidos
+    this.createSonidos();
     
     
     // Y unos ejes. Imprescindibles para orientarnos sobre dónde están las cosas
@@ -51,7 +50,7 @@ class MyScene extends THREE.Scene {
     // Por último creamos el modelo.
     // El modelo puede incluir su parte de la interfaz gráfica de usuario. Le pasamos la referencia a 
     // la gui y el texto bajo el que se agruparán los controles de la interfaz que añada el modelo.
-    this.model = new Habitacion(this.gui, "Controles del bicho");
+    this.model = new Habitacion(this.gui, "Controles del bicho", this.sonidoAdd, this.audioLoader);
     this.add (this.model);
 
 
@@ -76,7 +75,7 @@ class MyScene extends THREE.Scene {
     //   Los planos de recorte cercano y lejano
     this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
     // También se indica dónde se coloca
-    this.camera.position.set (6, 3, 6);
+    this.camera.position.set (2, 10, 6);
     // Y hacia dónde mira
     var look = new THREE.Vector3 (0,0,0);
     this.camera.lookAt(look);
@@ -109,6 +108,7 @@ class MyScene extends THREE.Scene {
     this.guiControls = new function() {
       // En el contexto de una función   this   alude a la función
       this.lightIntensity = 0.5;
+      this.lightColor = 'Neutro';
       this.axisOnOff = true;
       this.nuevoMueble = 'Mesa';
       this.aniadirMueble = function(){
@@ -134,30 +134,77 @@ class MyScene extends THREE.Scene {
     var folder = gui.addFolder ('Luz y Ejes');
     
     // Se le añade un control para la intensidad de la luz
-    folder.add (this.guiControls, 'lightIntensity', 0, 1, 0.1).name('Intensidad de la Luz : ');
+    folder.add (this.guiControls, 'lightIntensity', 0, 1, 0.1).name('Intensidad de la Luz : ').onChange(function(){
+      that.spotLight.intensity = that.guiControls.lightIntensity;
+    });
+    // Control para el color de la luz ambiental
+    folder.add(this.guiControls, 'lightColor').options(this.coloresLuz).name("Color").onChange(function(){
+      switch(that.guiControls.lightColor){
+        case "Neutro":
+          that.ambientLight.color = new THREE.Color(0xCCDDEE);
+          break;
+        case "Blanco":
+          that.ambientLight.color = new THREE.Color(0xFFFFFF);
+          break;
+        case "Azul":
+          that.ambientLight.color = new THREE.Color(0x0000FF);
+          break;
+        case "Rojo":
+          that.ambientLight.color = new THREE.Color(0xFF0000);
+          break;
+        case "Amarillo":
+          that.ambientLight.color = new THREE.Color(0xFFFF00);
+          break;
+        case "Verde":
+          that.ambientLight.color = new THREE.Color(0x00FF00);
+          break;
+      }
+    });
     
     // Y otro para mostrar u ocultar los ejes
-    folder.add (this.guiControls, 'axisOnOff').name ('Mostrar ejes : ');
+    folder.add (this.guiControls, 'axisOnOff').name ('Mostrar ejes : ').onChange(function(){
+      that.axis.visible = that.guiControls.axisOnOff;
+    });
     
     return gui;
   }
   
   createLights () {
-    // Se crea una luz ambiental, evita que se vean complentamente negras las zonas donde no incide de manera directa una fuente de luz
-    // La luz ambiental solo tiene un color y una intensidad
-    // Se declara como   var   y va a ser una variable local a este método
-    //    se hace así puesto que no va a ser accedida desde otros métodos
-    var ambientLight = new THREE.AmbientLight(0xccddee, 0.35);
+    // Se crea una luz ambiental
+    this.ambientLight = new THREE.AmbientLight(0xccddee, 0.35);
     // La añadimos a la escena
-    this.add (ambientLight);
+    this.add (this.ambientLight);
     
     // Se crea una luz focal que va a ser la luz principal de la escena
     // La luz focal, además tiene una posición, y un punto de mira
     // Si no se le da punto de mira, apuntará al (0,0,0) en coordenadas del mundo
-    // En este caso se declara como   this.atributo   para que sea un atributo accesible desde otros métodos.
     this.spotLight = new THREE.SpotLight( 0xffffff, this.guiControls.lightIntensity );
     this.spotLight.position.set( 60, 60, 40 );
     this.add (this.spotLight);
+  }
+
+  createSonidos(){
+    // create an AudioListener and add it to the camera
+    this.listener = new THREE.AudioListener();
+    this.getCamera().add( this.listener );
+    
+    // create a global audio source
+    this.sonidoAdd = new THREE.Audio( this.listener );
+
+    // load a sound and set it as the Audio object's buffer
+    this.audioLoader = new THREE.AudioLoader();
+   
+
+    // Musica de fondo
+    this.musicaFondo = new THREE.Audio(this.listener);
+    this.musicaFondoLoader = new THREE.AudioLoader();
+    var that = this;
+      this.musicaFondoLoader.load( './sonidos/ScottHolmesMusic-UrbanHaze.mp3', function( buffer ) {
+      that.musicaFondo.setBuffer( buffer );
+      that.musicaFondo.setLoop( true );
+      that.musicaFondo.setVolume( 0.5 );
+      that.musicaFondo.play();
+    });
   }
   
   createRenderer (myCanvas) {
@@ -209,19 +256,9 @@ class MyScene extends THREE.Scene {
   update () {
     // Le decimos al renderizador "visualiza la escena que te indico usando la cámara que te estoy pasando"
     this.renderer.render (this, this.getCamera());
-
-    // Se actualizan los elementos de la escena para cada frame
-    // Se actualiza la intensidad de la luz con lo que haya indicado el usuario en la gui
-    this.spotLight.intensity = this.guiControls.lightIntensity;
-    
-    // Se muestran o no los ejes según lo que idique la GUI
-    this.axis.visible = this.guiControls.axisOnOff;
     
     // Se actualiza la posición de la cámara según su controlador
     this.cameraControl.update();
-    
-    // Se actualiza el resto del modelo
-    this.model.update();
     
     // Este método debe ser llamado cada vez que queramos visualizar la escena de nuevo.
     // Literalmente le decimos al navegador: "La próxima vez que haya que refrescar la pantalla, llama al método que te indico".
