@@ -53,13 +53,7 @@ class MyScene extends THREE.Scene {
     // Variable que contiene el objeto seleccionado actual
     this.selectedObject = this.model.muebles[0];
     
-    // Objetos que se pueden seleccionar
-    this.pickableObjects = [];
-
-    var that = this;
-    this.model.muebles.forEach(element => {
-      that.pickableObjects.push(element.cubo);
-    });
+    
 
     
  
@@ -128,7 +122,7 @@ class MyScene extends THREE.Scene {
     var folder = gui.addFolder ('Luz y Ejes');
     
     // Control de intensidad de la luz
-    folder.add (this.guiControls, 'lightIntensity', 0, 1, 0.1).name('Intensidad de la Luz : ').onChange(function(){
+    folder.add (this.guiControls, 'lightIntensity', 0, 1, 0.1).name('Intensidad: ').onChange(function(){
       that.spotLight.intensity = that.guiControls.lightIntensity;
     });
     // Control para el color de la luz ambiental
@@ -318,7 +312,7 @@ class MyScene extends THREE.Scene {
 
       this.raycaster.setFromCamera(mouse, this.getCamera());
 
-      var pickedObjects = this.raycaster.intersectObjects(this.pickableObjects, true);
+      var pickedObjects = this.raycaster.intersectObjects(this.model.pickableObjects, true);
 
       if(pickedObjects.length > 0){
         this.selectedObject = pickedObjects[0].object.parent.parent;

@@ -70,7 +70,8 @@ class MeshCama extends THREE.Object3D{
 
     var colchon = new THREE.BoxGeometry(1.55, 0.4, 3.15);
     colchon.translate(0.0, 0.6, 0.0);
-    var materialColchon = new THREE.MeshPhongMaterial({color: 0x0000FF});
+    var texturemanta = new THREE.TextureLoader().load('./imgs/manta.jpg');
+    var materialColchon = new THREE.MeshPhongMaterial({map: texturemanta});
 
     this.colchon = new THREE.Mesh(colchon, materialColchon);
 

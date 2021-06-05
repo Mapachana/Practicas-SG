@@ -94,6 +94,14 @@ class Habitacion extends THREE.Mesh{
         that.add(element);
       });
 
+      // Objetos que se pueden seleccionar
+      this.pickableObjects = [];
+
+      var that = this;
+      this.muebles.forEach(element => {
+        that.pickableObjects.push(element.cubo);
+      });
+
 
   }
   createGUI (gui,titleGui) {
@@ -225,7 +233,7 @@ class Habitacion extends THREE.Mesh{
     if(!res[0]){
       nuevoMueble.position.y = res[1];
       this.muebles.push(nuevoMueble);
-      this.parent.pickableObjects.push(nuevoMueble.cubo);
+      this.pickableObjects.push(nuevoMueble.cubo);
       this.add(nuevoMueble);
       this.num_id++;
       this.sonidoMueble();
@@ -245,12 +253,12 @@ class Habitacion extends THREE.Mesh{
         return elemento.ident == mueble.ident;
       });
 
-      var indiceSeleccionable = this.parent.pickableObjects.findIndex(function(elemento){
+      var indiceSeleccionable = this.pickableObjects.findIndex(function(elemento){
         return elemento.id == mueble.cubo.id;
       });
 
       this.muebles.splice(indiceMueble, 1);
-      this.parent.pickableObjects.splice(indiceSeleccionable, 1);
+      this.pickableObjects.splice(indiceSeleccionable, 1);
       this.remove(mueble);
     }
     
