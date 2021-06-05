@@ -322,8 +322,6 @@ class MyScene extends THREE.Scene {
 
       if(pickedObjects.length > 0){
         this.selectedObject = pickedObjects[0].object.parent.parent;
-        console.log(pickedObjects.length);
-        console.log(this.selectedObject.ident);
       }
     }
     else if(this.modoActual == MyScene.AddingMueble){ // Si el modo es añadir, se añade un objeto en las coordenadas indicadas
