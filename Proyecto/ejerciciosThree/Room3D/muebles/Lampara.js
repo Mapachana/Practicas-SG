@@ -21,7 +21,7 @@ class Lampara extends Mueble{
     this.altura = 0.0;
 
     // Creo la geometria
-    this.cubo = new MeshLampara();
+    this.cubo = this.construirObjeto();
 
     // Creo los colisionadores
     var bboxaux = new THREE.Box3();
@@ -36,38 +36,37 @@ class Lampara extends Mueble{
     this.nombre="Lampara";
 
   }
+
+  construirObjeto(){
+    var objeto = new THREE.Object3D();
+
+    var pantallaaux = new THREE.CylinderGeometry(0.2, 0.4, 0.3, 10, 10);
+    pantallaaux.translate(0.0, 0.75, 0.0);
+    var material_pantalla = new THREE.MeshLambertMaterial({color: 0x00FFFF});
+    var pantalla = new THREE.Mesh(pantallaaux, material_pantalla);
+
+    var material_base = new THREE.MeshPhongMaterial({color: 0x0000FF});
+
+    var paloaux = new THREE.CylinderGeometry(0.1, 0.15, 0.1, 10, 10);
+    paloaux.translate(0.0, 0.55, 0.0);
+    var palo = new THREE.Mesh(paloaux, material_base);
+
+    var baseaux = new THREE.SphereGeometry(0.25, 10, 10);
+    baseaux.translate(0.0, 0.25, 0.0);
+    var base = new THREE.Mesh(baseaux, material_base);
+
+    objeto.add(pantalla);
+    objeto.add(palo);
+    objeto.add(base);
+
+    return objeto;
+  }
   createGUI (gui,titleGui) {
   }
       
   update () {
   }
 }
-
-/* Clase para crear el mesh del mueble */
-class MeshLampara extends THREE.Object3D{
-  constructor (ancho, profundidad) {
-    super();
-    var pantalla = new THREE.CylinderGeometry(0.2, 0.4, 0.3, 10, 10);
-    pantalla.translate(0.0, 0.75, 0.0);
-    var material_pantalla = new THREE.MeshLambertMaterial({color: 0x00FFFF});
-    this.pantalla = new THREE.Mesh(pantalla, material_pantalla);
-
-    var material_base = new THREE.MeshPhongMaterial({color: 0x0000FF});
-
-    var palo = new THREE.CylinderGeometry(0.1, 0.15, 0.1, 10, 10);
-    palo.translate(0.0, 0.55, 0.0);
-    this.palo = new THREE.Mesh(palo, material_base);
-
-    var base = new THREE.SphereGeometry(0.25, 10, 10);
-    base.translate(0.0, 0.25, 0.0);
-    this.base = new THREE.Mesh(base, material_base);
-
-    this.add(this.pantalla);
-    this.add(this.palo);
-    this.add(this.base);   
-  }
-}
-
 
 export { Lampara }
 

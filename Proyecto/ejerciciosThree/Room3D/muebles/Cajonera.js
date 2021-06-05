@@ -21,7 +21,7 @@ class Cajonera extends Mueble{
     this.altura = 1.85;
 
     // Creo la geometria
-    this.cubo = new MeshCajonera();
+    this.cubo = this.construirObjeto();
 
     // Creo los colisionadores
     var bboxaux = new THREE.Box3();
@@ -36,34 +36,27 @@ class Cajonera extends Mueble{
     this.nombre="Cajonera";
 
   }
-  createGUI (gui,titleGui) {
-  }
-      
-  update () {
-  }
-}
 
-/* Clase para crear el mesh del mueble */
-class MeshCajonera extends THREE.Object3D{
-  constructor (ancho, profundidad) {
-    super();
+  construirObjeto(){
+    var objeto = new THREE.Object3D();
+
     var lateral = new THREE.BoxGeometry(0.1, 1.6, 0.5);
     var texture = new THREE.TextureLoader().load('./imgs/wood.jpg');
     var material = new THREE.MeshPhongMaterial ({map: texture});
 
-    this.lateral1 = new THREE.Mesh(lateral, material);
-    this.lateral1.position.set(-0.5, 0.9, 0.0);
+    var lateral1 = new THREE.Mesh(lateral, material);
+    lateral1.position.set(-0.5, 0.9, 0.0);
 
-    this.lateral2 = new THREE.Mesh(lateral, material);
-    this.lateral2.position.set(0.5, 0.9, 0.0);
+    var lateral2 = new THREE.Mesh(lateral, material);
+    lateral2.position.set(0.5, 0.9, 0.0);
 
-    var base = new THREE.BoxGeometry(1.1, 0.1, 0.5);
+    var baseaux = new THREE.BoxGeometry(1.1, 0.1, 0.5);
 
-    this.base = new THREE.Mesh(base, material);
-    this.base.position.set(0.0, 0.05, 0.0);
+    var base = new THREE.Mesh(baseaux, material);
+    base.position.set(0.0, 0.05, 0.0);
 
-    this.techo = new THREE.Mesh(base, material);
-    this.techo.position.set(0.0, 1.75, 0.0);
+    var techo = new THREE.Mesh(baseaux, material);
+    techo.position.set(0.0, 1.75, 0.0);
 
     var cajon = new THREE.BoxGeometry(0.9, 0.4, 0.5);
     cajon.translate(0.0, 0.2, 0.0);
@@ -71,42 +64,50 @@ class MeshCajonera extends THREE.Object3D{
     var tirador = new THREE.SphereGeometry(0.05, 10, 10);
     var materialTirador = new THREE.MeshPhongMaterial({color: 0x111111});
     
-    this.cajon1 = new THREE.Mesh(cajon, material);
-    this.cajon1.position.y = 0.1;
-    this.tirador1 = new THREE.Mesh(tirador, materialTirador);
-    this.tirador1.position.set(0.0, 0.4, 0.25);
+    var cajon1 = new THREE.Mesh(cajon, material);
+    cajon1.position.y = 0.1;
+    var tirador1 = new THREE.Mesh(tirador, materialTirador);
+    tirador1.position.set(0.0, 0.4, 0.25);
 
-    this.cajon2 = new THREE.Mesh(cajon, material);
-    this.cajon2.position.y = 0.5;
-    this.tirador2 = new THREE.Mesh(tirador, materialTirador);
-    this.tirador2.position.set(0.0, 0.8, 0.25);
+    var cajon2 = new THREE.Mesh(cajon, material);
+    cajon2.position.y = 0.5;
+    var tirador2 = new THREE.Mesh(tirador, materialTirador);
+    tirador2.position.set(0.0, 0.8, 0.25);
 
-    this.cajon3 = new THREE.Mesh(cajon, material);
-    this.cajon3.position.y = 0.9;
-    this.tirador3 = new THREE.Mesh(tirador, materialTirador);
-    this.tirador3.position.set(0.0, 1.2, 0.25);
+    var cajon3 = new THREE.Mesh(cajon, material);
+    cajon3.position.y = 0.9;
+    var tirador3 = new THREE.Mesh(tirador, materialTirador);
+    tirador3.position.set(0.0, 1.2, 0.25);
 
-    this.cajon4 = new THREE.Mesh(cajon, material);
-    this.cajon4.position.y = 1.3;
-    this.tirador4 = new THREE.Mesh(tirador, materialTirador);
-    this.tirador4.position.set(0.0, 1.6, 0.25);
+    var cajon4 = new THREE.Mesh(cajon, material);
+    cajon4.position.y = 1.3;
+    var tirador4 = new THREE.Mesh(tirador, materialTirador);
+    tirador4.position.set(0.0, 1.6, 0.25);
 
 
-    this.add(this.lateral1);
-    this.add(this.lateral2);
-    this.add(this.base);
-    this.add(this.techo);
-    this.add(this.cajon1);
-    this.add(this.tirador1);
-    this.add(this.cajon2);
-    this.add(this.tirador2);
-    this.add(this.cajon3);
-    this.add(this.tirador3);
-    this.add(this.cajon4);
-    this.add(this.tirador4);
+    objeto.add(lateral1);
+    objeto.add(lateral2);
+    objeto.add(base);
+    objeto.add(techo);
+    objeto.add(cajon1);
+    objeto.add(tirador1);
+    objeto.add(cajon2);
+    objeto.add(tirador2);
+    objeto.add(cajon3);
+    objeto.add(tirador3);
+    objeto.add(cajon4);
+    objeto.add(tirador4);
 
+    return objeto;
+  }
+
+  createGUI (gui,titleGui) {
+  }
+      
+  update () {
   }
 }
+
 
 
 export { Cajonera }

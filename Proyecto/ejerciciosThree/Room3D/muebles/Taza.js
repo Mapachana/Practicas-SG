@@ -21,7 +21,7 @@ class Taza extends Mueble{
     this.altura = 0.00;
 
     // Creo la geometria
-    this.cubo = new MeshTaza();
+    this.cubo = this.construirObjeto();
 
     // Creo los colisionadores
     var bboxaux = new THREE.Box3();
@@ -36,18 +36,11 @@ class Taza extends Mueble{
     this.nombre="Taza";
 
   }
-  createGUI (gui,titleGui) {
-  }
-      
-  update () {
-  }
-}
 
-/* Clase para crear el mesh del mueble */
-class MeshTaza extends THREE.Object3D{
-  constructor (ancho, profundidad) {
-    super();
-    this.material = new THREE.MeshPhongMaterial(0xFFFFFF); // Creo el material
+  construirObjeto(){
+    var objeto = new THREE.Object3D();
+
+    var material = new THREE.MeshPhongMaterial(0xFFFFFF); // Creo el material
   
     var cil_ext = new THREE.CylinderGeometry(0.25, 0.25, 0.375, 20);
     var cil_int = new THREE.CylinderGeometry(0.175, 0.175, 0.375, 20);
@@ -63,13 +56,20 @@ class MeshTaza extends THREE.Object3D{
     var taza_media = cil_ext_BSP.union(new ThreeBSP(asa));
     var taza_final = taza_media.subtract(new ThreeBSP(cil_int));
 
-    this.cubo = taza_final.toMesh(this.material);
-    this.cubo.scale.set(0.5, 0.5, 0.5);
+    var cubo = taza_final.toMesh(material);
+    cubo.scale.set(0.5, 0.5, 0.5);
 
-    this.add(this.cubo);
+    objeto.add(cubo);
+
+    return objeto;
+  }
+
+  createGUI (gui,titleGui) {
+  }
+      
+  update () {
   }
 }
-
 
 export { Taza }
 

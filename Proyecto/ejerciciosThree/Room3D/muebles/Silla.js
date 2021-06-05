@@ -21,7 +21,7 @@ class Silla extends Mueble{
     this.altura = 0.0;
 
     // Creo la geometria
-    this.cubo = new MeshSilla();
+    this.cubo = this.construirObjeto();
 
     // Creo los colisionadores
     var bboxaux = new THREE.Box3();
@@ -36,55 +36,56 @@ class Silla extends Mueble{
     this.nombre="Silla";
 
   }
-  createGUI (gui,titleGui) {
-  }
-      
-  update () {
-  }
-}
 
-/* Clase para crear el mesh del mueble */
-class MeshSilla extends THREE.Object3D{
-  constructor (ancho, profundidad) {
-    super();
+  construirObjeto(){
+    var objeto = new THREE.Object3D();
+
     var pata = new THREE.BoxGeometry(0.15, 0.4, 0.15);
     var texture = new THREE.TextureLoader().load('./imgs/wood.jpg');
     var material = new THREE.MeshPhongMaterial ({map: texture});
 
-    this.pata1 = new THREE.Mesh(pata, material);
-    this.pata1.position.set(-0.25, 0.2, 0.25);
+    var pata1 = new THREE.Mesh(pata, material);
+    pata1.position.set(-0.25, 0.2, 0.25);
 
-    this.pata2 = new THREE.Mesh(pata, material);
-    this.pata2.position.set(-0.25, 0.2, -0.25);
+    var pata2 = new THREE.Mesh(pata, material);
+    pata2.position.set(-0.25, 0.2, -0.25);
 
-    this.pata3 = new THREE.Mesh(pata, material);
-    this.pata3.position.set(0.25, 0.2, -0.25);
+    var pata3 = new THREE.Mesh(pata, material);
+    pata3.position.set(0.25, 0.2, -0.25);
 
-    this.pata4 = new THREE.Mesh(pata, material);
-    this.pata4.position.set(0.25, 0.2, 0.25);
+    var pata4 = new THREE.Mesh(pata, material);
+    pata4.position.set(0.25, 0.2, 0.25);
 
-    this.respaldo1 = new THREE.Mesh(pata, material);
-    this.respaldo1.position.set(0.25, 0.8, 0.25);
+    var respaldo1 = new THREE.Mesh(pata, material);
+    respaldo1.position.set(0.25, 0.8, 0.25);
 
-    this.respaldo2 = new THREE.Mesh(pata, material);
-    this.respaldo2.position.set(-0.25, 0.8, 0.25);
+    var respaldo2 = new THREE.Mesh(pata, material);
+    respaldo2.position.set(-0.25, 0.8, 0.25);
 
-    this.respaldo3 = new THREE.Mesh(pata, material);
-    this.respaldo3.rotation.z = Math.PI/2;
-    this.respaldo3.position.set(0.0, 0.9, 0.25);
+    var respaldo3 = new THREE.Mesh(pata, material);
+    respaldo3.rotation.z = Math.PI/2;
+    respaldo3.position.set(0.0, 0.9, 0.25);
 
-    var cubo = new THREE.BoxGeometry(0.65, 0.2, 0.65);
-    cubo.translate(0.0, 0.5, 0.0);
+    var cuboaux = new THREE.BoxGeometry(0.65, 0.2, 0.65);
+    cuboaux.translate(0.0, 0.5, 0.0);
 
-    this.cubo = new THREE.Mesh(cubo, material);
-    this.add(this.pata1);
-    this.add(this.pata2);
-    this.add(this.pata3);
-    this.add(this.pata4);
-    this.add(this.respaldo1);
-    this.add(this.respaldo2);
-    this.add(this.respaldo3);
-    this.add(this.cubo);
+    var cubo = new THREE.Mesh(cuboaux, material);
+    objeto.add(pata1);
+    objeto.add(pata2);
+    objeto.add(pata3);
+    objeto.add(pata4);
+    objeto.add(respaldo1);
+    objeto.add(respaldo2);
+    objeto.add(respaldo3);
+    objeto.add(cubo);
+
+    return objeto;
+  }
+
+  createGUI (gui,titleGui) {
+  }
+      
+  update () {
   }
 }
 

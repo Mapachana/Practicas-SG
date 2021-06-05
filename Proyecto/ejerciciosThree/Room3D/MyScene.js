@@ -304,6 +304,7 @@ class MyScene extends THREE.Scene {
 
   /* Funcion que se ejecuta cuando se pulsa con el raton */
   onMouseDown (event) {
+    console.log("picking");
     // Si el modo actual es mover, entonces se selecciona un mueble
     if(this.modoActual == MyScene.MovingMueble){
       var mouse = new THREE.Vector2();
@@ -316,6 +317,7 @@ class MyScene extends THREE.Scene {
 
       if(pickedObjects.length > 0){
         this.selectedObject = pickedObjects[0].object.parent.parent;
+        console.log(this.selectedObject.ident);
       }
     }
     else if(this.modoActual == MyScene.AddingMueble){ // Si el modo es añadir, se añade un objeto en las coordenadas indicadas

@@ -33,6 +33,9 @@ class Mueble extends THREE.Object3D{
       this.nombre = "mueble generico";
 
   }
+
+  construirObjeto(){
+  }
   createGUI (gui,titleGui) {
   }
        

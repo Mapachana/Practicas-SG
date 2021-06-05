@@ -21,7 +21,7 @@ class Mesa2 extends Mueble{
     this.altura = 1.05;
 
     // Creo la geometria
-    this.cubo = new MeshMesa2();
+    this.cubo = this.construirObjeto();
 
     // Creo los colisionadores
     var bboxaux = new THREE.Box3();
@@ -36,42 +36,45 @@ class Mesa2 extends Mueble{
     this.nombre="Mesa2";
 
   }
-  createGUI (gui,titleGui) {
-  }
-      
-  update () {
-  }
-}
 
-/* Clase para crear el mesh del mueble */
-class MeshMesa2 extends THREE.Object3D{
-  constructor (ancho, profundidad) {
-    super();
+  construirObjeto(){
+    var objeto = new THREE.Object3D();
+
     var pata = new THREE.BoxGeometry(0.15, 0.8, 0.15);
     var texture = new THREE.TextureLoader().load('./imgs/wood.jpg');
     var material = new THREE.MeshPhongMaterial ({map: texture});
 
-    this.pata1 = new THREE.Mesh(pata, material);
-    this.pata1.position.set(-0.5, 0.4, 0.5);
+    var pata1 = new THREE.Mesh(pata, material);
+    pata1.position.set(-0.5, 0.4, 0.5);
 
-    this.pata2 = new THREE.Mesh(pata, material);
-    this.pata2.position.set(-0.5, 0.4, -0.5);
+    var pata2 = new THREE.Mesh(pata, material);
+    pata2.position.set(-0.5, 0.4, -0.5);
 
-    this.pata3 = new THREE.Mesh(pata, material);
-    this.pata3.position.set(0.5, 0.4, -0.5);
+    var pata3 = new THREE.Mesh(pata, material);
+    pata3.position.set(0.5, 0.4, -0.5);
 
-    this.pata4 = new THREE.Mesh(pata, material);
-    this.pata4.position.set(0.5, 0.4, 0.5);
+    var pata4 = new THREE.Mesh(pata, material);
+    pata4.position.set(0.5, 0.4, 0.5);
 
-    var cubo = new THREE.CylinderGeometry(1.15, 1.15, 0.2, 10, 10);
-    cubo.translate(0.0, 0.9, 0.0);
+    var cuboaux = new THREE.CylinderGeometry(1.15, 1.15, 0.2, 10, 10);
+    cuboaux.translate(0.0, 0.9, 0.0);
 
-    this.cubo = new THREE.Mesh(cubo, material);
-    this.add(this.pata1);
-    this.add(this.pata2);
-    this.add(this.pata3);
-    this.add(this.pata4);
-    this.add(this.cubo);
+    var cubo = new THREE.Mesh(cuboaux, material);
+    objeto.add(pata1);
+    objeto.add(pata2);
+    objeto.add(pata3);
+    objeto.add(pata4);
+    objeto.add(cubo);
+  
+
+    return objeto;
+  }
+
+
+  createGUI (gui,titleGui) {
+  }
+      
+  update () {
   }
 }
 
