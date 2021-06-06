@@ -8,9 +8,8 @@ import * as THREE from '../../libs/three.module.js'
 import { Mueble } from './Mueble.js'
 
 class Mesita extends Mueble{
-  constructor(identificador, gui, titlegui){
-    super(identificador, gui, titlegui);
-    this.createGUI(gui, titlegui);
+  constructor(identificador){
+    super(identificador);
 
     // Mueble que se puede poner encima de otros y si esta encima de alguien de quien
     this.estarEncima = false;
@@ -69,11 +68,6 @@ class Mesita extends Mueble{
     return objeto;
   }
 
-  createGUI (gui,titleGui) {
-  }
-      
-  update () {
-  }
 }
 
 

@@ -47,7 +47,7 @@ class MyScene extends THREE.Scene {
     this.raycaster = new THREE.Raycaster();
     
     /// Instancio la habitacion
-    this.model = new Habitacion(this.gui, "Controles del bicho", this.sonidoAdd, this.audioLoader);
+    this.model = new Habitacion(this.sonidoAdd, this.audioLoader);
     this.add (this.model);
 
     // Variable que contiene el objeto seleccionado actual

@@ -21,10 +21,8 @@ import { Suelo } from './Suelo.js'
 
 class Habitacion extends THREE.Mesh{
 
-  constructor(gui, titlegui, sonido, loadSonido){
+  constructor(sonido, loadSonido){
       super();
-       
-      this.createGUI(gui, titlegui);
 
       // Cojo el reproductor de sonidos
       this.sonidoAdd = sonido;
@@ -74,17 +72,17 @@ class Habitacion extends THREE.Mesh{
       this.muebles = [];
 
       // Añado muebles iniciales de ejemplo
-      var mueble1 = new Mesa(this.num_id, this.gui, "");
+      var mueble1 = new Mesa(this.num_id);
       this.muebles.push(mueble1);
       this.num_id++;
 
-      var mueble2 = new Lampara(this.num_id, this.gui, "");
+      var mueble2 = new Lampara(this.num_id);
       mueble2.position.set(0.0, mueble1.altura, 0.0);
       mueble2.encimaDe = mueble1.ident;
       this.muebles.push(mueble2);
       this.num_id++;
 
-      var mueble3 = new Silla(this.num_id, this.gui, "");
+      var mueble3 = new Silla(this.num_id);
       mueble3.position.set(0.0, 0.0, 1.0);
       this.muebles.push(mueble3);
       this.num_id++;
@@ -103,12 +101,6 @@ class Habitacion extends THREE.Mesh{
       });
 
 
-  }
-  createGUI (gui,titleGui) {
-  }
-       
-  update () {
-   
   }
 
   /* Funcion mover hacia alante comrpobando colisiones */
@@ -196,31 +188,31 @@ class Habitacion extends THREE.Mesh{
     var nuevoMueble = null;
     switch (tipoMueble){
       case "Mesa":
-        nuevoMueble = new Mesa(this.num_id, this.gui, "");
+        nuevoMueble = new Mesa(this.num_id);
         break;
       case "Taza":
-        nuevoMueble = new Taza(this.num_id, this.gui, "");
+        nuevoMueble = new Taza(this.num_id);
         break;
       case "Mesa2":
-        nuevoMueble = new Mesa2(this.num_id, this.gui, "");
+        nuevoMueble = new Mesa2(this.num_id);
         break;
       case "Mesita":
-        nuevoMueble = new Mesita(this.num_id, this.gui, "");
+        nuevoMueble = new Mesita(this.num_id);
         break;
       case "Lampara":
-        nuevoMueble = new Lampara(this.num_id, this.gui, "");
+        nuevoMueble = new Lampara(this.num_id);
         break;
       case "Cama":
-        nuevoMueble = new Cama(this.num_id, this.gui, "");
+        nuevoMueble = new Cama(this.num_id);
         break;
       case "Silla":
-        nuevoMueble = new Silla(this.num_id, this.gui, "");
+        nuevoMueble = new Silla(this.num_id);
         break;
       case "Cajonera":
-        nuevoMueble = new Cajonera(this.num_id, this.gui, "");
+        nuevoMueble = new Cajonera(this.num_id);
         break;
       case "Armario":
-        nuevoMueble = new Armario(this.num_id, this.gui, "");
+        nuevoMueble = new Armario(this.num_id);
         break;
     }
 

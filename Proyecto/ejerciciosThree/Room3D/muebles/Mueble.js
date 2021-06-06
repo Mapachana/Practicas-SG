@@ -8,9 +8,8 @@ import * as THREE from '../../libs/three.module.js'
 
 class Mueble extends THREE.Object3D{
 
-  constructor(identificador, gui, titlegui){
+  constructor(identificador){
       super();
-      this.createGUI(gui, titlegui);
 
       // Identificador univoco del mueble en la habitacion
       this.ident = new Number(identificador);
@@ -35,11 +34,6 @@ class Mueble extends THREE.Object3D{
   }
 
   construirObjeto(){
-  }
-  createGUI (gui,titleGui) {
-  }
-       
-  update () {
   }
 
 }

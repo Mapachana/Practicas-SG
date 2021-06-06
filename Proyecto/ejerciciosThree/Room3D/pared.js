@@ -33,8 +33,6 @@ class Pared extends THREE.Mesh{
 
   }
        
-  update () { 
-  }
 
 
 }
