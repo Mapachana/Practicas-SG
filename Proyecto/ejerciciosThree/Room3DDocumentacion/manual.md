@@ -63,3 +63,4 @@ Desde este panel podemos controlar distintas cosas:
 #### Sobre los muebles....
 
 Un mueble puede permitir que haya otros muebles encima suyo (como las mesas y cajonera), pero no todos los muebles pueden ponerse encima de otros. Algunos que sí pueden estar encima de otros son las tazas y lámparas.
+
