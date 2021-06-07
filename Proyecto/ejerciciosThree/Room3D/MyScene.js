@@ -97,6 +97,7 @@ class MyScene extends THREE.Scene {
       this.lightIntensity = 0.5;
       this.lightColor = 'Neutro';
       this.axisOnOff = true;
+      this.sombrasOnOff = true;
       this.nuevoMueble = 'Mesa';
       this.aniadirMueble = function(){
         that.modoActual = MyScene.AddingMueble;
@@ -168,7 +169,10 @@ class MyScene extends THREE.Scene {
     // La luz focal, además tiene una posición, y un punto de mira
     // Si no se le da punto de mira, apuntará al (0,0,0) en coordenadas del mundo
     this.spotLight = new THREE.SpotLight( 0xffffff, this.guiControls.lightIntensity );
-    this.spotLight.position.set( 60, 60, 40 );
+    this.spotLight.position.set( 40, 60, 40 );
+    this.spotLight.castShadow = true;
+    this.spotLight.shadow.mapSize.width=1024;
+    this.spotLight.shadow.mapSize.height=1024;
     this.add (this.spotLight);
   }
 
@@ -209,6 +213,9 @@ class MyScene extends THREE.Scene {
     
     // Se establece el tamaño, se aprovecha la totalidad de la ventana del navegador
     renderer.setSize(window.innerWidth, window.innerHeight);
+
+    // Activo sombras
+    renderer.shadowMap.enabled = true;
     
     // La visualización se muestra en el lienzo recibido
     $(myCanvas).append(renderer.domElement);

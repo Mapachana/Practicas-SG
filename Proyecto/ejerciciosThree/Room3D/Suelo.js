@@ -21,6 +21,8 @@ class Suelo extends THREE.Object3D {
     this.ground = new THREE.Mesh (geometryGround, materialGround);
     
     this.ground.position.y = -0.1; // Hago que quede por debajo de altura 0
+
+    this.ground.receiveShadow = true;
     
     this.add(this.ground);
   }

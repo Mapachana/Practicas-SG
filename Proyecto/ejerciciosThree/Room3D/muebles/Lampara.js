@@ -58,6 +58,11 @@ class Lampara extends Mueble{
     objeto.add(palo);
     objeto.add(base);
 
+    objeto.traverseVisible(function(unnodo){
+      unnodo.castShadow = true;
+      unnodo.receiveShadow = true;
+    });
+
     return objeto;
   }
 

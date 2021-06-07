@@ -85,7 +85,7 @@ class Armario extends Mueble{
     puerta2.position.set(0.225, 0.9, 0.0);
     var tirador4 = new THREE.Mesh(tirador, materialTirador);
     tirador4.position.set(0.15, 1.2, 0.25);
-
+  
     objeto.add(lateral1);
     objeto.add(lateral2);
     objeto.add(base);
@@ -98,6 +98,11 @@ class Armario extends Mueble{
     objeto.add(tirador3);
     objeto.add(puerta2);
     objeto.add(tirador4);
+
+    objeto.traverseVisible(function(unnodo){
+      unnodo.castShadow = true;
+      unnodo.receiveShadow = true;
+    });
 
     return objeto;
   }

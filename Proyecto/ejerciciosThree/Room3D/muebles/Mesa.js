@@ -60,11 +60,17 @@ class Mesa extends Mueble{
     cuboaux.translate(0.0, 0.9, 0.0);
 
     var cubo = new THREE.Mesh(cuboaux, material);
+
     objeto.add(pata1);
     objeto.add(pata2);
     objeto.add(pata3);
     objeto.add(pata4);
     objeto.add(cubo);
+
+    objeto.traverseVisible(function(unnodo){
+      unnodo.castShadow = true;
+      unnodo.receiveShadow = true;
+    });
 
     return objeto;
   }

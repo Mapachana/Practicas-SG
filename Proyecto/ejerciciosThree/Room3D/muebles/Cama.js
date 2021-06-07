@@ -81,6 +81,11 @@ class Cama extends Mueble{
     objeto.add(colchon);
     objeto.add(almohada);
 
+    objeto.traverseVisible(function(unnodo){
+      unnodo.castShadow = true;
+      unnodo.receiveShadow = true;
+    });
+
     return objeto;
   }
 

@@ -45,7 +45,7 @@ class Silla extends Mueble{
 
     var pata1 = new THREE.Mesh(pata, material);
     pata1.position.set(-0.25, 0.2, 0.25);
-
+    
     var pata2 = new THREE.Mesh(pata, material);
     pata2.position.set(-0.25, 0.2, -0.25);
 
@@ -69,6 +69,7 @@ class Silla extends Mueble{
     cuboaux.translate(0.0, 0.5, 0.0);
 
     var cubo = new THREE.Mesh(cuboaux, material);
+
     objeto.add(pata1);
     objeto.add(pata2);
     objeto.add(pata3);
@@ -77,6 +78,11 @@ class Silla extends Mueble{
     objeto.add(respaldo2);
     objeto.add(respaldo3);
     objeto.add(cubo);
+    
+    objeto.traverseVisible(function(unnodo){
+      unnodo.castShadow = true;
+      unnodo.receiveShadow = true;
+    });
 
     return objeto;
   }

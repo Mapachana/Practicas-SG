@@ -83,7 +83,6 @@ class Cajonera extends Mueble{
     var tirador4 = new THREE.Mesh(tirador, materialTirador);
     tirador4.position.set(0.0, 1.6, 0.25);
 
-
     objeto.add(lateral1);
     objeto.add(lateral2);
     objeto.add(base);
@@ -96,6 +95,11 @@ class Cajonera extends Mueble{
     objeto.add(tirador3);
     objeto.add(cajon4);
     objeto.add(tirador4);
+
+    objeto.traverseVisible(function(unnodo){
+      unnodo.castShadow = true;
+      unnodo.receiveShadow = true;
+    });
 
     return objeto;
   }

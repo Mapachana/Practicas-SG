@@ -23,6 +23,9 @@ class Pared extends THREE.Mesh{
 
       this.cubo = new THREE.Mesh(cubo, material);
 
+      this.cubo.castShadow = true;
+      this.cubo.receiveShadow = true;
+
       // Creo los colisionadores
       var bboxaux = new THREE.Box3();
       bboxaux.setFromObject(this.cubo);
