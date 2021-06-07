@@ -169,7 +169,7 @@ class MyScene extends THREE.Scene {
     // La luz focal, además tiene una posición, y un punto de mira
     // Si no se le da punto de mira, apuntará al (0,0,0) en coordenadas del mundo
     this.spotLight = new THREE.SpotLight( 0xffffff, this.guiControls.lightIntensity );
-    this.spotLight.position.set( 40, 60, 40 );
+    this.spotLight.position.set( 20, 40, 20 );
     this.spotLight.castShadow = true;
     this.spotLight.shadow.mapSize.width=1024;
     this.spotLight.shadow.mapSize.height=1024;

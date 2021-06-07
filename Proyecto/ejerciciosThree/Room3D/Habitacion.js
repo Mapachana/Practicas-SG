@@ -30,6 +30,7 @@ class Habitacion extends THREE.Mesh{
 
       // Atributo de cuanto avanza un mueble por cada pulsacion de teclas
       this.INCREMENTOS = 0.05;
+      this.ANGULO = Math.PI/2;
 
       // Ancho y largo de la habitacion
       this.ANCHO = 5;
@@ -100,11 +101,9 @@ class Habitacion extends THREE.Mesh{
         that.pickableObjects.push(element.cubo);
       });
 
-      console.log(mueble2.getEstarEncima());
-      console.log(mueble2.getEncimaDe());
-
 
   }
+  
 
   /* Funcion mover hacia alante comrpobando colisiones */
   moverAdelante(mueble){
@@ -162,11 +161,11 @@ class Habitacion extends THREE.Mesh{
 
   /* Funcion para rotar hacia la izquierda un mueble comprobadno colisiones */
   rotarIzquierda(mueble){
-    mueble.rotation.y += Math.PI/2;
+    mueble.rotation.y += this.ANGULO;
 
     var res = this.colisionaParedes(mueble);
     if(res[0]){
-      mueble.rotation.y -= Math.PI/2;
+      mueble.rotation.y -= this.ANGULO;
     }
     else{
       mueble.position.y = res[1];
@@ -175,11 +174,11 @@ class Habitacion extends THREE.Mesh{
 
   /* Funcion para rotar hacia la derecha un mueble comprobadno colisiones */
   rotarDerecha(mueble){
-    mueble.rotation.y -= Math.PI/2;
+    mueble.rotation.y -= this.ANGULO;
 
     var res = this.colisionaParedes(mueble);
     if(res[0]){
-      mueble.rotation.y += Math.PI/2;
+      mueble.rotation.y += this.ANGULO;
     }
     else{
       mueble.position.y = res[1];
