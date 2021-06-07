@@ -32,7 +32,10 @@ class Pared extends THREE.Mesh{
       this.add(this.bbox);
 
   }
-       
+  
+  getBbox(){
+    return this.bbox;
+  }
 
 
 }

@@ -77,8 +77,8 @@ class Habitacion extends THREE.Mesh{
       this.num_id++;
 
       var mueble2 = new Lampara(this.num_id);
-      mueble2.position.set(0.0, mueble1.altura, 0.0);
-      mueble2.encimaDe = mueble1.ident;
+      mueble2.position.set(0.0, mueble1.getAltura(), 0.0);
+      mueble2.setEncimaDe(mueble1.ident);
       this.muebles.push(mueble2);
       this.num_id++;
 
@@ -99,6 +99,9 @@ class Habitacion extends THREE.Mesh{
       this.muebles.forEach(element => {
         that.pickableObjects.push(element.cubo);
       });
+
+      console.log(mueble2.getEstarEncima());
+      console.log(mueble2.getEncimaDe());
 
 
   }
@@ -236,7 +239,7 @@ class Habitacion extends THREE.Mesh{
   /* Funcion para eliminar un mueble */
   eliminarMueble(mueble){
     var tieneMuebleEncima = this.muebles.find(function(elemento){
-      return elemento.encimaDe == mueble.ident;
+      return elemento.getEncimaDe() == mueble.ident;
     });
 
     // Si el mueble tiene otro mueble encima no se puede eliminar, compruebo que no tiene ninguno encima y lo elimino
@@ -278,7 +281,7 @@ class Habitacion extends THREE.Mesh{
     resultado.push(0.0);
 
     var tieneMuebleEncima = this.muebles.find(function(elemento){
-      return elemento.encimaDe == mueble.ident;
+      return elemento.getEncimaDe() == mueble.ident;
     });
 
     // Si el mueble tiene otro mueble encima no se puede mover
@@ -288,21 +291,21 @@ class Habitacion extends THREE.Mesh{
  
 
     // Si estoy encima de otro mueble guardo la altura
-    if(mueble.encimaDe > 0){
+    if(mueble.getEncimaDe() > 0){
       resultado[1] = this.muebles.find(function(elemento){
-        return elemento.ident == mueble.encimaDe;
-      }).altura;
+        return elemento.ident == mueble.getEncimaDe();
+      }).getAltura();
     }
 
     // Actualizo colisionadores del mueble
     mueble.updateMatrixWorld();
-    var aux = mueble.bbox.box.clone().applyMatrix4(mueble.matrixWorld);
+    var aux = mueble.getBbox().box.clone().applyMatrix4(mueble.matrixWorld);
 
     // Compruebo si colisiona con las paredes de la habitacion
     this.paredes.forEach(element => {
       element.updateMatrixWorld();
 
-      var aux2 = element.bbox.box.clone().applyMatrix4(element.matrixWorld);
+      var aux2 = element.getBbox().box.clone().applyMatrix4(element.matrixWorld);
       
       if (aux.intersectsBox(aux2)){
         resultado[0] = true;
@@ -313,21 +316,21 @@ class Habitacion extends THREE.Mesh{
     this.muebles.forEach(element => {
       element.updateMatrixWorld();
 
-      var aux = mueble.bbox.box.clone().applyMatrix4(mueble.matrixWorld);
+      var aux = mueble.getBbox().box.clone().applyMatrix4(mueble.matrixWorld);
 
-      var aux2 = element.bbox.box.clone().applyMatrix4(element.matrixWorld);
+      var aux2 = element.getBbox().box.clone().applyMatrix4(element.matrixWorld);
       
       if(mueble.ident != element.ident){
         // Si choca con otro mueble distinto
         if (aux.intersectsBox(aux2)){
           // Si el elemento se puede poner encima del otro
-          if(element.ponerEncima && mueble.estarEncima && !acaboDePonerloAbajo){
+          if(element.getPonerEncima() && mueble.getEstarEncima() && !acaboDePonerloAbajo){
             aux.translate(new THREE.Vector3(0.0, element.altura, 0.0));
 
             that.muebles.forEach(element2 => {
               element2.updateMatrixWorld();
         
-              var aux3 = element2.bbox.box.clone().applyMatrix4(element2.matrixWorld);
+              var aux3 = element2.getBbox().box.clone().applyMatrix4(element2.matrixWorld);
               
               // Si se choca con otro mueble no lo subo, si no si lo subo
               if (mueble.ident != element2.ident && aux.intersectsBox(aux3)){ // aqui antes comparaba ident con element y no element2
@@ -335,8 +338,8 @@ class Habitacion extends THREE.Mesh{
               }
 
               if(!resultado[0]){
-                resultado[1] = element.altura;
-                mueble.encimaDe = element.ident;
+                resultado[1] = element.getAltura();
+                mueble.setEncimaDe(element.ident);
                 acaboDePonerloEncima = true;
               }
             });
@@ -346,30 +349,30 @@ class Habitacion extends THREE.Mesh{
             resultado[0] = true;
           }
         }
-        else if(mueble.encimaDe > 0 && !acaboDePonerloEncima){ // Si ya esta encima
+        else if(mueble.getEncimaDe() > 0 && !acaboDePonerloEncima){ // Si ya esta encima
           var elemento_abajo = that.muebles.find(function(elemento){
-              return elemento.ident == mueble.encimaDe;
+              return elemento.ident == mueble.getEncimaDe();
             });
 
           aux.translate(new THREE.Vector3(0.0, -elemento_abajo.altura, 0.0));
 
           elemento_abajo.updateMatrixWorld();
 
-          var aux3 = elemento_abajo.bbox.box.clone().applyMatrix4(elemento_abajo.matrixWorld);
+          var aux3 = elemento_abajo.getBbox().box.clone().applyMatrix4(elemento_abajo.matrixWorld);
           
           // Aqui hay que comprobar que cuando lo bajo no choque con nadie
 
           that.muebles.forEach(element2 => {
-            var aux4 = element2.bbox.box.clone().applyMatrix4(element2.matrixWorld);
+            var aux4 = element2.getBbox().box.clone().applyMatrix4(element2.matrixWorld);
             if(mueble.ident != element2.ident && aux.intersectsBox(aux4)){
-              if(mueble.estarEncima && element2.ponerEncima){
-                if(element2.altura > elemento_abajo.altura){
-                  resultado[1] = element2.altura;
-                  mueble.encimaDe = element2.ident;
+              if(mueble.getEstarEncima() && element2.getPonerEncima()){
+                if(element2.getAltura() > elemento_abajo.getAltura()){
+                  resultado[1] = element2.getAltura();
+                  mueble.setEncimaDe(element2.ident);
                 }
                 if(!aux.intersectsBox(aux3)){ // Si no colisiona  con el anterior objeto con el que estaba encima pongo el nuevo
-                  resultado[1] = element2.altura;
-                  mueble.encimaDe = element2.ident
+                  resultado[1] = element2.getAltura();
+                  mueble.setEncimaDe(element2.ident);
                 }
                 acaboDePonerloEncima = true;
               }
@@ -381,7 +384,7 @@ class Habitacion extends THREE.Mesh{
           });
           if(!resultado[0] && !acaboDePonerloEncima && !aux.intersectsBox(aux3)){ // Si no choca con nadie lo bajo
             resultado[1] = 0.0;
-            mueble.encimaDe = -1;
+            mueble.setEncimaDe(-1);
             acaboDePonerloAbajo = true;
           }
           
@@ -391,7 +394,23 @@ class Habitacion extends THREE.Mesh{
 
     return resultado;
   }
+
+  getMuebles(){
+    return this.muebles;
+  }
+
+  calcularCoordenadas(evento, camara){
+    return this.suelo.calcularCoordenadas(evento, camara);
+  }
+
+  getPickableObjects(){
+    return this.pickableObjects;
+  }
 }
+
+
+
+
 
 
 export { Habitacion }

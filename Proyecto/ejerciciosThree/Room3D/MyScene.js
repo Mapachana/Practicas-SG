@@ -51,7 +51,7 @@ class MyScene extends THREE.Scene {
     this.add (this.model);
 
     // Variable que contiene el objeto seleccionado actual
-    this.selectedObject = this.model.muebles[0];
+    this.selectedObject = this.model.getMuebles()[0];
     
     
 
@@ -313,7 +313,7 @@ class MyScene extends THREE.Scene {
 
       this.raycaster.setFromCamera(mouse, this.getCamera());
 
-      var pickedObjects = this.raycaster.intersectObjects(this.model.pickableObjects, true);
+      var pickedObjects = this.raycaster.intersectObjects(this.model.getPickableObjects(), true);
 
       if(pickedObjects.length > 0){
         this.selectedObject = pickedObjects[0].object.parent.parent;
@@ -321,7 +321,7 @@ class MyScene extends THREE.Scene {
       }
     }
     else if(this.modoActual == MyScene.AddingMueble){ // Si el modo es añadir, se añade un objeto en las coordenadas indicadas
-      var coords = this.model.suelo.calcularCoordenadas(event, this.getCamera());
+      var coords = this.model.calcularCoordenadas(event, this.getCamera());
       if (coords != null){
         this.model.aniadirMueble(this.guiControls.nuevoMueble, coords);
       }

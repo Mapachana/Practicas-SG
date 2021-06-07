@@ -33,7 +33,38 @@ class Mueble extends THREE.Object3D{
 
   }
 
+  /* Funcion para construir el objeto con los mesh */
   construirObjeto(){
+  }
+
+  /* Funcion para cpnsultar si puede estar encima */
+  getEstarEncima(){
+    return this.estarEncima;
+  }
+
+  /* Funcion para consultar encima de quien esta */
+  getEncimaDe(){
+    return this.encimaDe;
+  }
+
+  /* Funcion para consultar si se le pueden poner encima otros muebles */
+  getPonerEncima(){
+    return this.ponerEncima;
+  }
+
+  /* Funcion para obtener a que altura se deben poner muebles encima suyo */
+  getAltura(){
+    return this.altura;
+  }
+
+  /* Funcion para indicar encima de quien esta el mueble */
+  setEncimaDe(ident){
+    this.encimaDe = ident;
+  }
+
+  /* Funcion para consultar la bbox (bounding box)*/
+  getBbox(){
+    return this.bbox;
   }
 
 }
