@@ -42,7 +42,7 @@ En este modo podemos seleccionar, desplazar, rotar y eliminar muebles.
 
 Aclaración: Un mueble puede desplazarse o rotar si al hacerlo no choca con otro mueble. En caso de que al moverlo o rotar chocase, el mueble no realizará la acción.
 
-Aclaración2: Un mueble que tiene otro mueble encima no puede desplazarse, rotar ni eliminarse.
+Aclaración 2: Un mueble que tiene otro mueble encima no puede desplazarse, rotar ni eliminarse.
 
 #### Añadir
 

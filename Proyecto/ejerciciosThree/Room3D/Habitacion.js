@@ -79,7 +79,7 @@ class Habitacion extends THREE.Mesh{
 
       var mueble2 = new Lampara(this.num_id);
       mueble2.position.set(0.0, mueble1.getAltura(), 0.0);
-      mueble2.setEncimaDe(mueble1.ident);
+      mueble2.setEncimaDe(mueble1.getIdent());
       this.muebles.push(mueble2);
       this.num_id++;
 
@@ -238,13 +238,17 @@ class Habitacion extends THREE.Mesh{
   /* Funcion para eliminar un mueble */
   eliminarMueble(mueble){
     var tieneMuebleEncima = this.muebles.find(function(elemento){
-      return elemento.getEncimaDe() == mueble.ident;
+      return elemento.getEncimaDe() == mueble.getIdent();
+    });
+
+    var estaEnHabitacion = this.muebles.find(function(elemento){
+      return elemento.getIdent() == mueble.getIdent();
     });
 
     // Si el mueble tiene otro mueble encima no se puede eliminar, compruebo que no tiene ninguno encima y lo elimino
-    if(typeof tieneMuebleEncima == 'undefined'){
+    if(typeof tieneMuebleEncima == 'undefined' && !(typeof estaEnHabitacion == 'undefined')){
       var indiceMueble = this.muebles.findIndex(function(elemento){
-        return elemento.ident == mueble.ident;
+        return elemento.getIdent() == mueble.getIdent();
       });
 
       var indiceSeleccionable = this.pickableObjects.findIndex(function(elemento){
@@ -280,7 +284,7 @@ class Habitacion extends THREE.Mesh{
     resultado.push(0.0);
 
     var tieneMuebleEncima = this.muebles.find(function(elemento){
-      return elemento.getEncimaDe() == mueble.ident;
+      return elemento.getEncimaDe() == mueble.getIdent();
     });
 
     // Si el mueble tiene otro mueble encima no se puede mover
@@ -292,7 +296,7 @@ class Habitacion extends THREE.Mesh{
     // Si estoy encima de otro mueble guardo la altura
     if(mueble.getEncimaDe() > 0){
       resultado[1] = this.muebles.find(function(elemento){
-        return elemento.ident == mueble.getEncimaDe();
+        return elemento.getIdent() == mueble.getEncimaDe();
       }).getAltura();
     }
 
@@ -319,7 +323,7 @@ class Habitacion extends THREE.Mesh{
 
       var aux2 = element.getBbox().box.clone().applyMatrix4(element.matrixWorld);
       
-      if(mueble.ident != element.ident){
+      if(mueble.getIdent() != element.getIdent()){
         // Si choca con otro mueble distinto
         if (aux.intersectsBox(aux2)){
           // Si el elemento se puede poner encima del otro
@@ -332,13 +336,13 @@ class Habitacion extends THREE.Mesh{
               var aux3 = element2.getBbox().box.clone().applyMatrix4(element2.matrixWorld);
               
               // Si se choca con otro mueble no lo subo, si no si lo subo
-              if (mueble.ident != element2.ident && aux.intersectsBox(aux3)){ // aqui antes comparaba ident con element y no element2
+              if (mueble.getIdent() != element2.getIdent() && aux.intersectsBox(aux3)){ // aqui antes comparaba ident con element y no element2
                 resultado[0] = true;
               }
 
               if(!resultado[0]){
                 resultado[1] = element.getAltura();
-                mueble.setEncimaDe(element.ident);
+                mueble.setEncimaDe(element.getIdent());
                 acaboDePonerloEncima = true;
               }
             });
@@ -350,7 +354,7 @@ class Habitacion extends THREE.Mesh{
         }
         else if(mueble.getEncimaDe() > 0 && !acaboDePonerloEncima){ // Si ya esta encima
           var elemento_abajo = that.muebles.find(function(elemento){
-              return elemento.ident == mueble.getEncimaDe();
+              return elemento.getIdent() == mueble.getEncimaDe();
             });
 
           aux.translate(new THREE.Vector3(0.0, -elemento_abajo.altura, 0.0));
@@ -363,15 +367,15 @@ class Habitacion extends THREE.Mesh{
 
           that.muebles.forEach(element2 => {
             var aux4 = element2.getBbox().box.clone().applyMatrix4(element2.matrixWorld);
-            if(mueble.ident != element2.ident && aux.intersectsBox(aux4)){
+            if(mueble.getIdent() != element2.getIdent() && aux.intersectsBox(aux4)){
               if(mueble.getEstarEncima() && element2.getPonerEncima()){
                 if(element2.getAltura() > elemento_abajo.getAltura()){
                   resultado[1] = element2.getAltura();
-                  mueble.setEncimaDe(element2.ident);
+                  mueble.setEncimaDe(element2.getIdent());
                 }
                 if(!aux.intersectsBox(aux3)){ // Si no colisiona  con el anterior objeto con el que estaba encima pongo el nuevo
                   resultado[1] = element2.getAltura();
-                  mueble.setEncimaDe(element2.ident);
+                  mueble.setEncimaDe(element2.getIdent());
                 }
                 acaboDePonerloEncima = true;
               }

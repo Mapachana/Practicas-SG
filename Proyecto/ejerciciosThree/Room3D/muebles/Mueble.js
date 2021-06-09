@@ -67,6 +67,11 @@ class Mueble extends THREE.Object3D{
     return this.bbox;
   }
 
+  /* Funcion para consultar el identificador */
+  getIdent(){
+    return this.ident;
+  }
+
 }
 
 export { Mueble }
