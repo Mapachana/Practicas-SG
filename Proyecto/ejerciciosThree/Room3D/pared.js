@@ -30,6 +30,7 @@ class Pared extends THREE.Mesh{
       var bboxaux = new THREE.Box3();
       bboxaux.setFromObject(this.cubo);
       this.bbox = new THREE.Box3Helper (bboxaux, 0xFF0000);
+      this.bbox.visible = false;
 
       this.add(this.cubo);
       this.add(this.bbox);

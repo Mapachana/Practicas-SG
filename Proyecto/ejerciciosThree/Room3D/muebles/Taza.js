@@ -26,7 +26,7 @@ class Taza extends Mueble{
     var bboxaux = new THREE.Box3();
     bboxaux.setFromObject(this.cubo);
     this.bbox = new THREE.Box3Helper (bboxaux, 0xFF0000);
-    this.bbox.visible = true;
+    this.bbox.visible = false;
 
     // Añado todo
     this.add(this.cubo);
